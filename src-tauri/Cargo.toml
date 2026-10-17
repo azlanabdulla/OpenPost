@@ -10,6 +10,7 @@ edition = "2021"
 [lib]
 name = "openpost_lib"
 crate-type = ["rlib"]
+test = false
 
 [build-dependencies]
 tauri-build = { version = "2.0.0", features = [] }

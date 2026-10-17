@@ -21,6 +21,7 @@ import { ExportModal } from './components/modals/ExportModal';
 import { ImportModal } from './components/modals/ImportModal';
 import { CommandPalette } from './components/common/CommandPalette';
 import { useThemeStore } from './stores/themeStore';
+import { useHistoryStore } from './stores/historyStore';
 import { HttpRequest } from './types/http';
 
 export const App: React.FC = () => {
@@ -89,10 +90,42 @@ export const App: React.FC = () => {
         const response = await executeHttpRequest(effectiveRequest, abortController.signal);
         setResponse(activeTab.id, response);
         setStatusText(`Completed with ${response.statusCode} in ${response.durationMs}ms`);
+
+        // Record request to History (SQLite / IndexedDB)
+        const headersMap: Record<string, string> = {};
+        for (const h of effectiveRequest.headers) {
+          if (h.enabled && h.key) headersMap[h.key] = h.value;
+        }
+        useHistoryStore.getState().addEntry({
+          method: effectiveRequest.method,
+          url: effectiveRequest.url,
+          headersJson: JSON.stringify(headersMap),
+          body: effectiveRequest.body?.rawJson || effectiveRequest.body?.rawText,
+          bodyType: effectiveRequest.body?.type,
+          responseStatus: response.statusCode,
+          responseStatusText: response.statusText,
+          responseDurationMs: response.durationMs,
+          responseSizeBytes: response.bodySizeBytes,
+        });
       } catch (err: unknown) {
         const errorObj = err as HttpExecutionError;
         setError(activeTab.id, errorObj);
         setStatusText(errorObj.isCancelled ? 'Request cancelled' : 'Request failed');
+
+        if (!errorObj.isCancelled) {
+          const headersMap: Record<string, string> = {};
+          for (const h of effectiveRequest.headers) {
+            if (h.enabled && h.key) headersMap[h.key] = h.value;
+          }
+          useHistoryStore.getState().addEntry({
+            method: effectiveRequest.method,
+            url: effectiveRequest.url,
+            headersJson: JSON.stringify(headersMap),
+            body: effectiveRequest.body?.rawJson || effectiveRequest.body?.rawText,
+            bodyType: effectiveRequest.body?.type,
+            error: errorObj.message,
+          });
+        }
       }
     },
     [activeTab?.id, setIsLoading, setResponse, setError]

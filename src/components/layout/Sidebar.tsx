@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { FolderTree, History, Globe2, Settings, Plus, Search, ChevronRight, Upload } from 'lucide-react';
 import { useRequestStore } from '../../stores/requestStore';
+import { useHistoryStore } from '../../stores/historyStore';
+import { HistoryPanel } from '../history/HistoryPanel';
 
 type SidebarTab = 'collections' | 'history' | 'environments';
 
@@ -69,7 +71,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenSettings, onOpenImport }
             type="text"
             value={searchQuery}
             aria-label={`Search ${activeTab}`}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              const val = e.target.value;
+              setSearchQuery(val);
+              useHistoryStore.getState().setSearchQuery(val);
+            }}
             placeholder={`Search ${activeTab}...`}
             className="w-full bg-surface-panel text-slate-200 text-xs pl-8 pr-2 py-1 rounded-md border border-surface-border focus:border-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
           />
@@ -116,13 +122,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenSettings, onOpenImport }
           </div>
         )}
 
-        {activeTab === 'history' && (
-          <div className="flex flex-col items-center justify-center h-full text-center text-surface-muted py-8">
-            <History className="w-8 h-8 text-slate-600 mb-2 stroke-[1.5]" />
-            <p className="text-xs font-medium text-slate-400">No Request History</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Executed requests will appear here</p>
-          </div>
-        )}
+        {activeTab === 'history' && <HistoryPanel />}
 
         {activeTab === 'environments' && (
           <div className="flex flex-col items-center justify-center h-full text-center text-surface-muted py-8">
