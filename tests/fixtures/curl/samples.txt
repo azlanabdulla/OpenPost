@@ -1,0 +1,14 @@
+# Basic GET
+curl https://jsonplaceholder.typicode.com/posts/1
+
+# POST with JSON data and headers
+curl -X POST https://api.example.com/v1/users -H "Content-Type: application/json" -H "Accept: application/json" -d '{"name": "Alice", "role": "Engineer"}'
+
+# Basic Auth and insecure flag
+curl -u admin:secretpass123 -k https://internal.dev.local/admin/metrics
+
+# cURL with unsupported flags
+curl https://api.example.com/stream --limit-rate 50k --socks5 127.0.0.1:9050 -H "Authorization: Bearer token123"
+
+# Form urlencoded data
+curl -X POST https://httpbin.org/post -H "Content-Type: application/x-www-form-urlencoded" --data-raw "grant_type=client_credentials&client_id=my_client"

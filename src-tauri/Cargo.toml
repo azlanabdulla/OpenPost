@@ -1,0 +1,29 @@
+[package]
+name = "openpost"
+version = "0.1.0"
+description = "The free, open-source Postman alternative"
+authors = ["OpenPost Contributors"]
+license = "MIT"
+repository = "https://github.com/openpost/openpost"
+edition = "2021"
+
+[lib]
+name = "openpost_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.0.0", features = [] }
+
+[dependencies]
+tauri = { version = "2.0.0", features = [] }
+tauri-plugin-opener = "2.0.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "multipart", "rustls-tls", "cookies", "gzip", "brotli", "deflate"] }
+rusqlite = { version = "0.32", features = ["bundled"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

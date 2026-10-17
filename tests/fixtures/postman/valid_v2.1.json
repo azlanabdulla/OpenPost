@@ -1,0 +1,63 @@
+{
+  "info": {
+    "_postman_id": "c768461b-944d-4952-a39e-2d937a07ec82",
+    "name": "Customer Orders API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Obtain Bearer Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"supersecret\"\n}"
+            },
+            "url": {
+              "raw": "https://api.example.com/v1/auth/login",
+              "protocol": "https",
+              "host": ["api", "example", "com"],
+              "path": ["v1", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "List Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "https://api.example.com/v1/orders?status=active&limit=25",
+              "protocol": "https",
+              "host": ["api", "example", "com"],
+              "path": ["v1", "orders"],
+              "query": [
+                { "key": "status", "value": "active" },
+                { "key": "limit", "value": "25" }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "eyJhbGciOi..." }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

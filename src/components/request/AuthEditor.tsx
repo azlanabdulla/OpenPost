@@ -1,0 +1,225 @@
+import React, { useState } from 'react';
+import { AuthConfig, AuthType } from '../../types/http';
+import { Shield, Eye, EyeOff } from 'lucide-react';
+
+interface AuthEditorProps {
+  auth: AuthConfig;
+  onChange: (auth: AuthConfig) => void;
+}
+
+const AUTH_TYPES: Array<{ type: AuthType; label: string; desc: string }> = [
+  { type: 'none', label: 'No Auth', desc: 'No authentication credentials sent' },
+  { type: 'bearer', label: 'Bearer Token', desc: 'Token added to Authorization: Bearer <token>' },
+  { type: 'basic', label: 'Basic Auth', desc: 'Base64 encoded username & password' },
+  { type: 'apikey', label: 'API Key', desc: 'Key-value pair sent in Header or Query' },
+];
+
+export const AuthEditor: React.FC<AuthEditorProps> = ({ auth, onChange }) => {
+  const [showSecret, setShowSecret] = useState(false);
+
+  const handleTypeChange = (type: AuthType) => {
+    onChange({
+      ...auth,
+      type,
+      bearer: auth.bearer || { token: '' },
+      basic: auth.basic || { username: '', password: '' },
+      apiKey: auth.apiKey || { key: 'X-API-Key', value: '', addTo: 'header' },
+    });
+  };
+
+  return (
+    <div className="flex flex-col md:flex-row h-full p-3 gap-4">
+      {/* Sidebar Auth Type Selection */}
+      <div className="w-full md:w-56 flex flex-col gap-1 border-b md:border-b-0 md:border-r border-surface-border pb-3 md:pb-0 md:pr-3">
+        <span className="text-[11px] font-semibold text-surface-muted uppercase tracking-wider mb-1 px-2">
+          Auth Type
+        </span>
+        {AUTH_TYPES.map((at) => (
+          <button
+            key={at.type}
+            type="button"
+            onClick={() => handleTypeChange(at.type)}
+            className={`flex flex-col text-left px-3 py-2 rounded-lg text-xs transition-all ${
+              auth.type === at.type
+                ? 'bg-brand-500/20 text-brand-300 border border-brand-500/40 font-medium'
+                : 'text-slate-300 hover:bg-surface-panel border border-transparent'
+            }`}
+          >
+            <span>{at.label}</span>
+            <span className="text-[10px] text-slate-500 mt-0.5 leading-tight">{at.desc}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Auth Parameters Panel */}
+      <div className="flex-1 min-h-[220px]">
+        {auth.type === 'none' && (
+          <div className="flex flex-col items-center justify-center h-full text-center text-surface-muted py-12">
+            <Shield className="w-8 h-8 text-slate-600 mb-2" />
+            <p className="text-sm font-medium text-slate-400">No Authentication Configured</p>
+            <p className="text-xs text-slate-500 mt-1">This request will not carry any credentials</p>
+          </div>
+        )}
+
+        {auth.type === 'bearer' && (
+          <div className="max-w-xl space-y-4 pt-2">
+            <div>
+              <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center justify-between">
+                <span>Bearer Token</span>
+                <span className="text-[11px] text-slate-500">Supports variable substitution like {`{{token}}`}</span>
+              </label>
+              <div className="relative">
+                <input
+                  type={showSecret ? 'text' : 'password'}
+                  value={auth.bearer?.token || ''}
+                  placeholder="Paste token or {{api_token}}"
+                  onChange={(e) =>
+                    onChange({
+                      ...auth,
+                      bearer: { token: e.target.value },
+                    })
+                  }
+                  className="w-full bg-surface-panel text-slate-200 font-mono text-xs py-2 pl-3 pr-10 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowSecret(!showSecret)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                  title={showSecret ? 'Hide token' : 'Show token'}
+                >
+                  {showSecret ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {auth.type === 'basic' && (
+          <div className="max-w-xl space-y-4 pt-2">
+            <div>
+              <label className="block text-xs font-medium text-slate-300 mb-1.5">Username</label>
+              <input
+                type="text"
+                value={auth.basic?.username || ''}
+                placeholder="Username or {{username}}"
+                onChange={(e) =>
+                  onChange({
+                    ...auth,
+                    basic: {
+                      username: e.target.value,
+                      password: auth.basic?.password || '',
+                    },
+                  })
+                }
+                className="w-full bg-surface-panel text-slate-200 font-mono text-xs py-2 px-3 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-300 mb-1.5">Password</label>
+              <div className="relative">
+                <input
+                  type={showSecret ? 'text' : 'password'}
+                  value={auth.basic?.password || ''}
+                  placeholder="Password or {{password}}"
+                  onChange={(e) =>
+                    onChange({
+                      ...auth,
+                      basic: {
+                        username: auth.basic?.username || '',
+                        password: e.target.value,
+                      },
+                    })
+                  }
+                  className="w-full bg-surface-panel text-slate-200 font-mono text-xs py-2 pl-3 pr-10 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowSecret(!showSecret)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                  title={showSecret ? 'Hide password' : 'Show password'}
+                >
+                  {showSecret ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {auth.type === 'apikey' && (
+          <div className="max-w-xl space-y-4 pt-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1.5">Key</label>
+                <input
+                  type="text"
+                  value={auth.apiKey?.key || ''}
+                  placeholder="e.g. X-API-Key"
+                  onChange={(e) =>
+                    onChange({
+                      ...auth,
+                      apiKey: {
+                        key: e.target.value,
+                        value: auth.apiKey?.value || '',
+                        addTo: auth.apiKey?.addTo || 'header',
+                      },
+                    })
+                  }
+                  className="w-full bg-surface-panel text-slate-200 font-mono text-xs py-2 px-3 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1.5">Add To</label>
+                <select
+                  value={auth.apiKey?.addTo || 'header'}
+                  onChange={(e) =>
+                    onChange({
+                      ...auth,
+                      apiKey: {
+                        key: auth.apiKey?.key || '',
+                        value: auth.apiKey?.value || '',
+                        addTo: e.target.value as 'header' | 'query',
+                      },
+                    })
+                  }
+                  className="w-full bg-surface-panel text-slate-200 text-xs py-2 px-3 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none"
+                >
+                  <option value="header">Header</option>
+                  <option value="query">Query Params</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-300 mb-1.5">Value</label>
+              <div className="relative">
+                <input
+                  type={showSecret ? 'text' : 'password'}
+                  value={auth.apiKey?.value || ''}
+                  placeholder="API Key value"
+                  onChange={(e) =>
+                    onChange({
+                      ...auth,
+                      apiKey: {
+                        key: auth.apiKey?.key || '',
+                        value: e.target.value,
+                        addTo: auth.apiKey?.addTo || 'header',
+                      },
+                    })
+                  }
+                  className="w-full bg-surface-panel text-slate-200 font-mono text-xs py-2 pl-3 pr-10 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowSecret(!showSecret)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                  title={showSecret ? 'Hide value' : 'Show value'}
+                >
+                  {showSecret ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};

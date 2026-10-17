@@ -1,0 +1,29 @@
+{
+  "info": {
+    "name": "Collection with Pre-request & Test Scripts",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Scripted Request",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": ["pm.environment.set('token', 'dynamic_calc');"]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', () => pm.response.to.have.status(200));"]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "https://api.example.com/v1/scripted"
+      }
+    }
+  ]
+}

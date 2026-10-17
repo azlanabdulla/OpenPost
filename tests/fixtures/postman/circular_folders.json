@@ -1,0 +1,70 @@
+{
+  "info": {
+    "name": "Hostile Deep Nesting Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Level 1",
+      "item": [
+        {
+          "name": "Level 2",
+          "item": [
+            {
+              "name": "Level 3",
+              "item": [
+                {
+                  "name": "Level 4",
+                  "item": [
+                    {
+                      "name": "Level 5",
+                      "item": [
+                        {
+                          "name": "Level 6",
+                          "item": [
+                            {
+                              "name": "Level 7",
+                              "item": [
+                                {
+                                  "name": "Level 8",
+                                  "item": [
+                                    {
+                                      "name": "Level 9",
+                                      "item": [
+                                        {
+                                          "name": "Level 10",
+                                          "item": [
+                                            {
+                                              "name": "Level 11 (Exceeds Limit)",
+                                              "item": [
+                                                {
+                                                  "name": "Deep Request",
+                                                  "request": {
+                                                    "method": "GET",
+                                                    "url": "https://api.example.com/deep"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
