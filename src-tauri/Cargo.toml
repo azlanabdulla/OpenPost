@@ -6,6 +6,7 @@ authors = ["OpenPost Contributors"]
 license = "MIT"
 repository = "https://github.com/openpost/openpost"
 edition = "2021"
+default-run = "openpost"
 
 [lib]
 name = "openpost_lib"
