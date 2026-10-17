@@ -5,6 +5,7 @@ import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { json } from '@codemirror/lang-json';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { foldGutter, syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language';
+import { useThemeStore } from '../stores/themeStore';
 
 interface CodeMirrorEditorProps {
   value: string;
@@ -24,6 +25,7 @@ export const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
+  const { resolvedTheme } = useThemeStore();
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -35,10 +37,13 @@ export const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
       history(),
       foldGutter(),
       syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
-      oneDark,
       keymap.of([...defaultKeymap, ...historyKeymap]),
       EditorView.lineWrapping,
     ];
+
+    if (resolvedTheme === 'dark') {
+      extensions.push(oneDark);
+    }
 
     if (language === 'json') {
       extensions.push(json());
@@ -73,7 +78,7 @@ export const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
       view.destroy();
       viewRef.current = null;
     };
-  }, [language, readOnly]);
+  }, [language, readOnly, resolvedTheme]);
 
   // Keep editor content in sync when value changes from outside (e.g. tab switch or format)
   useEffect(() => {
@@ -90,7 +95,7 @@ export const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`h-full w-full overflow-hidden text-xs font-mono rounded-lg border border-surface-border bg-[#282c34] ${className}`}
+      className={`h-full w-full overflow-hidden text-xs font-mono rounded-lg border border-surface-border bg-surface-card ${className}`}
     />
   );
 };

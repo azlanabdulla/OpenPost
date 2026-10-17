@@ -3,9 +3,78 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Editorial Developer Tool Light Palette */
+    --color-surface-base: #FAF8F5;
+    --color-surface-card: #FFFFFF;
+    --color-surface-panel: #F7F5F0;
+    --color-surface-border: #E7E2DA;
+    --color-surface-hover: #F0EDE6;
+    --color-surface-muted: #6B655C;
+    --color-text-main: #1C1917;
+    --color-text-secondary: #57534E;
+    --color-text-muted: #78716C;
+
+    --color-brand-primary: #2F45FF;
+    --color-brand-hover: #1E34E6;
+    --color-brand-subtle: rgba(47, 69, 255, 0.08);
+
+    --color-method-get: #0D8050;
+    --color-method-post: #B45309;
+    --color-method-put: #1D4ED8;
+    --color-method-patch: #6D28D9;
+    --color-method-delete: #B91C1C;
+    --color-method-head: #475569;
+    --color-method-options: #0F766E;
+
+    --cm-bg: #FFFFFF;
+    --cm-gutter-bg: #F7F5F0;
+    --cm-border: #E7E2DA;
+    --cm-gutter-active: #EDE9E1;
+    --cm-text: #1C1917;
+    --cm-active-line: #F4F1EB;
+    --cm-selection: #DDE3FD;
+  }
+
+  :root[data-theme="dark"],
+  .dark {
+    /* Calm Obsidian Dark Palette */
+    --color-surface-base: #121214;
+    --color-surface-card: #18181B;
+    --color-surface-panel: #1E1E22;
+    --color-surface-border: #2A2A2E;
+    --color-surface-hover: #26262B;
+    --color-surface-muted: #9A9AA3;
+    --color-text-main: #ECECEE;
+    --color-text-secondary: #A1A1AA;
+    --color-text-muted: #71717A;
+
+    --color-brand-primary: #8C9AFF;
+    --color-brand-hover: #A5B0FF;
+    --color-brand-subtle: rgba(140, 154, 255, 0.12);
+
+    --color-method-get: #34D399;
+    --color-method-post: #FBBF24;
+    --color-method-put: #60A5FA;
+    --color-method-patch: #A78BFA;
+    --color-method-delete: #F87171;
+    --color-method-head: #94A3B8;
+    --color-method-options: #2DD4BF;
+
+    --cm-bg: #18181B;
+    --cm-gutter-bg: #1E1E22;
+    --cm-border: #2A2A2E;
+    --cm-gutter-active: #2D2D33;
+    --cm-text: #ECECEE;
+    --cm-active-line: #222226;
+    --cm-selection: #2D3748;
+  }
+
   body {
-    @apply bg-surface-base text-slate-100 antialiased;
+    background-color: var(--color-surface-base);
+    color: var(--color-text-main);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
   }
 }
 
@@ -20,12 +89,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1f293d;
+  background: var(--color-surface-border);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: var(--color-surface-muted);
 }
 
 /* Hide scrollbar utility */
@@ -37,11 +106,13 @@
   scrollbar-width: none;
 }
 
-/* CodeMirror 6 custom styling overrides */
+/* CodeMirror custom styling overrides with dynamic theme CSS variables */
 .cm-editor {
   height: 100% !important;
-  font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace !important;
+  font-family: 'JetBrains Mono', Consolas, monospace !important;
   font-size: 12px !important;
+  background-color: var(--cm-bg) !important;
+  color: var(--cm-text) !important;
 }
 
 .cm-scroller {
@@ -50,14 +121,23 @@
 }
 
 .cm-gutters {
-  background-color: #1f293d !important;
-  color: #64748b !important;
-  border-right: 1px solid #1f293d !important;
+  background-color: var(--cm-gutter-bg) !important;
+  color: var(--color-text-muted) !important;
+  border-right: 1px solid var(--cm-border) !important;
 }
 
 .cm-activeLineGutter {
-  background-color: #283548 !important;
-  color: #38bdf8 !important;
+  background-color: var(--cm-gutter-active) !important;
+  color: var(--color-brand-primary) !important;
+}
+
+.cm-activeLine {
+  background-color: var(--cm-active-line) !important;
+}
+
+.cm-selectionBackground,
+::selection {
+  background-color: var(--cm-selection) !important;
 }
 
 /* Accessibility: WCAG Reduced Motion preference */
@@ -74,4 +154,3 @@
     transition-duration: 0s !important;
   }
 }
-

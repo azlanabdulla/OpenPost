@@ -19,10 +19,11 @@ import { SettingsModal } from './components/modals/SettingsModal';
 import { AboutModal } from './components/modals/AboutModal';
 import { ExportModal } from './components/modals/ExportModal';
 import { ImportModal } from './components/modals/ImportModal';
+import { CommandPalette } from './components/common/CommandPalette';
+import { useThemeStore } from './stores/themeStore';
 import { HttpRequest } from './types/http';
 
 export const App: React.FC = () => {
-  const [isDarkMode, setIsDarkMode] = useState(true);
   const [statusText, setStatusText] = useState('Ready');
 
   // Modals state
@@ -30,10 +31,17 @@ export const App: React.FC = () => {
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [undefinedVarsModal, setUndefinedVarsModal] = useState<{
     request: HttpRequest;
     undefinedVars: string[];
   } | null>(null);
+
+  const { initTheme } = useThemeStore();
+
+  useEffect(() => {
+    initTheme();
+  }, [initTheme]);
 
   const {
     tabs,
@@ -52,40 +60,7 @@ export const App: React.FC = () => {
   const { addToast } = useToastStore();
   const activeTab = tabs.find((t) => t.id === activeTabId) || tabs[0];
 
-  // Theme synchronization
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [isDarkMode]);
-
-  // Global unhandled promise rejection & runtime error listener
-  useEffect(() => {
-    const handleRejection = (e: PromiseRejectionEvent) => {
-      console.error('Unhandled Promise Rejection:', e.reason);
-      addToast({
-        type: 'error',
-        title: 'Unexpected Background Error',
-        message: e.reason?.message || 'An asynchronous operation failed.',
-      });
-    };
-
-    const handleError = (e: ErrorEvent) => {
-      console.error('Global Error Event:', e.error);
-    };
-
-    window.addEventListener('unhandledrejection', handleRejection);
-    window.addEventListener('error', handleError);
-
-    return () => {
-      window.removeEventListener('unhandledrejection', handleRejection);
-      window.removeEventListener('error', handleError);
-    };
-  }, [addToast]);
-
-  // Global Keyboard shortcuts: Ctrl/Cmd+T (New tab), Ctrl/Cmd+W (Close tab)
+  // Global Keyboard shortcuts: Ctrl/Cmd+T (New tab), Ctrl/Cmd+W (Close tab), Ctrl/Cmd+K (Command palette)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 't') {
@@ -94,6 +69,9 @@ export const App: React.FC = () => {
       } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'w') {
         e.preventDefault();
         requestCloseTab(activeTab.id);
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen((prev) => !prev);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -189,12 +167,11 @@ export const App: React.FC = () => {
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-surface-base text-slate-100 font-sans">
       {/* 1. App Top Header */}
       <Header
-        isDarkMode={isDarkMode}
-        onToggleTheme={() => setIsDarkMode(!isDarkMode)}
         onOpenImport={() => setIsImportOpen(true)}
         onOpenExport={() => setIsExportOpen(true)}
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenAbout={() => setIsAboutOpen(true)}
+        onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
       />
 
       {/* 2. Main Workspace Layout */}
@@ -252,6 +229,14 @@ export const App: React.FC = () => {
       <AboutModal isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
       <ExportModal isOpen={isExportOpen} onClose={() => setIsExportOpen(false)} />
       <ImportModal isOpen={isImportOpen} onClose={() => setIsImportOpen(false)} />
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        onOpenImport={() => setIsImportOpen(true)}
+        onOpenExport={() => setIsExportOpen(true)}
+        onOpenSettings={() => setIsSettingsOpen(true)}
+        onOpenAbout={() => setIsAboutOpen(true)}
+      />
 
       {/* Undefined Variables Modal (OP-VAR-001) */}
       <Modal
