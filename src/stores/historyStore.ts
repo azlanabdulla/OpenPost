@@ -285,38 +285,92 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
 
     if (!targetTabId) return;
 
-    setMethod(entry.method as any);
-    setUrl(entry.url);
+    let hadRedactions = false;
 
-    // Restore headers if valid
+    // 1. Scrub URL query params: replace =[REDACTED] with empty value =
+    let cleanUrl = entry.url;
+    if (cleanUrl.includes('[REDACTED]')) {
+      cleanUrl = cleanUrl.replace(/=\[REDACTED\]/g, '=');
+      hadRedactions = true;
+    }
+
+    setMethod(entry.method as any);
+    setUrl(cleanUrl);
+
+    // 2. Scrub headers: if header contains [REDACTED], reset value to empty string
     try {
       const parsed = JSON.parse(entry.headersJson);
-      const headersList = Object.entries(parsed).map(([key, value]) => ({
-        id: `hdr-${Math.random().toString(36).slice(2, 9)}`,
-        key,
-        value: String(value),
-        enabled: true,
-      }));
+      const headersList = Object.entries(parsed).map(([key, value]) => {
+        const valStr = String(value);
+        if (valStr.includes('[REDACTED]')) {
+          hadRedactions = true;
+          return {
+            id: `hdr-${Math.random().toString(36).slice(2, 9)}`,
+            key,
+            value: '',
+            enabled: true,
+          };
+        }
+        return {
+          id: `hdr-${Math.random().toString(36).slice(2, 9)}`,
+          key,
+          value: valStr,
+          enabled: true,
+        };
+      });
       setHeaders(headersList);
     } catch {
       // Keep headers as is
     }
 
-    // Restore body if present
+    // 3. Scrub body: reset any [REDACTED] values to empty string
     if (entry.body) {
-      const isJson = entry.bodyType === 'json' || (!entry.bodyType && entry.body.trim().startsWith('{'));
+      let cleanBody = entry.body;
+      if (cleanBody.includes('[REDACTED]')) {
+        hadRedactions = true;
+        try {
+          const parsed = JSON.parse(cleanBody);
+          const scrubJson = (obj: any) => {
+            if (typeof obj === 'object' && obj !== null) {
+              for (const k of Object.keys(obj)) {
+                if (obj[k] === '[REDACTED]') {
+                  obj[k] = '';
+                } else if (typeof obj[k] === 'object') {
+                  scrubJson(obj[k]);
+                }
+              }
+            }
+          };
+          scrubJson(parsed);
+          cleanBody = JSON.stringify(parsed, null, 2);
+        } catch {
+          cleanBody = cleanBody.replace(/\[REDACTED\]/g, '');
+        }
+      }
+
+      const isJson = entry.bodyType === 'json' || (!entry.bodyType && cleanBody.trim().startsWith('{'));
       setBody({
         type: isJson ? 'json' : 'text',
-        rawJson: isJson ? entry.body : undefined,
-        rawText: !isJson ? entry.body : undefined,
+        rawJson: isJson ? cleanBody : undefined,
+        rawText: !isJson ? cleanBody : undefined,
       });
     }
 
-    addToast({
-      type: 'info',
-      title: 'Request Restored',
-      message: `${entry.method} ${entry.url} loaded into active tab.`,
-      durationMs: 3000,
-    });
+    // 4. Notify user if credentials were reset to empty fields
+    if (hadRedactions) {
+      addToast({
+        type: 'warning',
+        title: 'Credentials Cleared',
+        message: 'Restored from history. Redacted tokens, keys, and passwords were reset to empty fields for security.',
+        durationMs: 5000,
+      });
+    } else {
+      addToast({
+        type: 'info',
+        title: 'Request Restored',
+        message: `${entry.method} ${cleanUrl} loaded into active tab.`,
+        durationMs: 3000,
+      });
+    }
   },
 }));

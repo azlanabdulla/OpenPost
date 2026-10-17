@@ -137,4 +137,54 @@ describe('Request History Store & Secret Redaction (Problem 2)', () => {
       true
     );
   });
+
+  it('restoring a history entry with [REDACTED] credentials resets them to empty fields rather than sending literal [REDACTED]', () => {
+    const reqStore = useRequestStore.getState();
+    reqStore.addTab();
+
+    const redactedEntry: HistoryEntry = {
+      id: 'hist-redacted-test',
+      timestamp: Date.now(),
+      method: 'GET',
+      url: 'https://api.example.com/v1/auth?token=[REDACTED]&api_key=[REDACTED]&valid=true',
+      headersJson: JSON.stringify({
+        Authorization: '[REDACTED]',
+        Cookie: '[REDACTED]',
+        'X-API-Key': '[REDACTED]',
+        Accept: 'application/json',
+      }),
+      body: '{"password":"[REDACTED]","username":"admin"}',
+      bodyType: 'json',
+      responseStatus: 200,
+    };
+
+    useHistoryStore.getState().restoreEntryToTab(redactedEntry, false);
+
+    const activeTab = useRequestStore
+      .getState()
+      .tabs.find((t) => t.id === useRequestStore.getState().activeTabId);
+    expect(activeTab).toBeDefined();
+
+    // URL should have empty query values, not literal [REDACTED]
+    expect(activeTab?.request.url).not.toContain('[REDACTED]');
+    expect(activeTab?.request.url).toContain('token=&api_key=&valid=true');
+
+    // Headers with [REDACTED] should be reset to empty string
+    const authHeader = activeTab?.request.headers.find((h) => h.key === 'Authorization');
+    expect(authHeader).toBeDefined();
+    expect(authHeader?.value).toBe('');
+
+    const cookieHeader = activeTab?.request.headers.find((h) => h.key === 'Cookie');
+    expect(cookieHeader).toBeDefined();
+    expect(cookieHeader?.value).toBe('');
+
+    // Safe header preserved
+    const acceptHeader = activeTab?.request.headers.find((h) => h.key === 'Accept');
+    expect(acceptHeader?.value).toBe('application/json');
+
+    // Body password field should be reset to empty string
+    expect(activeTab?.request.body.rawJson).not.toContain('[REDACTED]');
+    expect(JSON.parse(activeTab?.request.body.rawJson!).password).toBe('');
+    expect(JSON.parse(activeTab?.request.body.rawJson!).username).toBe('admin');
+  });
 });

@@ -294,7 +294,3 @@ pub fn sanitize_url_secrets(url: &str) -> String {
         url.to_string()
     }
 }
-
-
-
-

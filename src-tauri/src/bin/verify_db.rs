@@ -16,7 +16,11 @@ fn main() {
         let item = HistoryEntryPayload {
             id: format!("req-prune-{}", i),
             timestamp: 1729188000 + i as i64,
-            method: if i % 2 == 0 { "GET".to_string() } else { "POST".to_string() },
+            method: if i % 2 == 0 {
+                "GET".to_string()
+            } else {
+                "POST".to_string()
+            },
             url: format!("https://api.example.com/resource/{}", i),
             headers_json: serde_json::json!({ "Accept": "application/json" }).to_string(),
             body: None,
@@ -30,7 +34,10 @@ fn main() {
         insert_history_record(&conn1, &item, 100).expect("Failed to insert record");
     }
     let records1 = get_history_records(&conn1).expect("Failed to fetch records");
-    println!("DB1 (rolling prune): stored {} records (capped at 100).", records1.len());
+    println!(
+        "DB1 (rolling prune): stored {} records (capped at 100).",
+        records1.len()
+    );
 
     // DB 2: Specific secret entry to verify column-level [REDACTED] storage
     let db2 = PathBuf::from("test_secrets_stored.db");
