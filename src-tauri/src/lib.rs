@@ -1,8 +1,8 @@
 pub mod commands;
 pub mod models;
 
+use commands::drafts::{load_drafts, save_drafts};
 use commands::http::execute_request;
-use commands::drafts::{save_drafts, load_drafts};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {

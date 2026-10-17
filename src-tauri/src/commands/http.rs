@@ -1,4 +1,4 @@
-use crate::models::http::{ExecuteRequestPayload, HttpResponsePayload, HttpResponseCookie};
+use crate::models::http::{ExecuteRequestPayload, HttpResponseCookie, HttpResponsePayload};
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 use reqwest::redirect::Policy;
 use std::collections::HashMap;
@@ -6,7 +6,9 @@ use std::str::FromStr;
 use std::time::{Duration, Instant};
 
 #[tauri::command]
-pub async fn execute_request(payload: ExecuteRequestPayload) -> Result<HttpResponsePayload, String> {
+pub async fn execute_request(
+    payload: ExecuteRequestPayload,
+) -> Result<HttpResponsePayload, String> {
     let start_time = Instant::now();
 
     // 1. Build Client with SSL and redirect settings
@@ -39,10 +41,8 @@ pub async fn execute_request(payload: ExecuteRequestPayload) -> Result<HttpRespo
     // 4. Attach Headers
     let mut header_map = HeaderMap::new();
     for (key, value) in payload.headers {
-        if let (Ok(h_name), Ok(h_val)) = (
-            HeaderName::from_str(&key),
-            HeaderValue::from_str(&value),
-        ) {
+        if let (Ok(h_name), Ok(h_val)) = (HeaderName::from_str(&key), HeaderValue::from_str(&value))
+        {
             header_map.insert(h_name, h_val);
         }
     }
@@ -132,17 +132,20 @@ pub async fn execute_request(payload: ExecuteRequestPayload) -> Result<HttpRespo
     }
 
     // Detect if content is binary
-    let is_binary_mime = content_type.as_ref().map(|ct| {
-        let ct_lower = ct.to_lowercase();
-        ct_lower.starts_with("image/")
-            || ct_lower.starts_with("audio/")
-            || ct_lower.starts_with("video/")
-            || ct_lower.contains("octet-stream")
-            || ct_lower.contains("pdf")
-            || ct_lower.contains("zip")
-            || ct_lower.contains("gzip")
-            || ct_lower.contains("tar")
-    }).unwrap_or(false);
+    let is_binary_mime = content_type
+        .as_ref()
+        .map(|ct| {
+            let ct_lower = ct.to_lowercase();
+            ct_lower.starts_with("image/")
+                || ct_lower.starts_with("audio/")
+                || ct_lower.starts_with("video/")
+                || ct_lower.contains("octet-stream")
+                || ct_lower.contains("pdf")
+                || ct_lower.contains("zip")
+                || ct_lower.contains("gzip")
+                || ct_lower.contains("tar")
+        })
+        .unwrap_or(false);
 
     let is_utf8 = std::str::from_utf8(&body_bytes).is_ok();
     let is_binary = is_binary_mime || !is_utf8;
@@ -171,7 +174,7 @@ pub async fn execute_request(payload: ExecuteRequestPayload) -> Result<HttpRespo
 /// Dependency-free standard RFC 4648 base64 encoder
 pub fn to_base64(bytes: &[u8]) -> String {
     const CHARSET: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-    let mut out = String::with_capacity((bytes.len() + 2) / 3 * 4);
+    let mut out = String::with_capacity(bytes.len().div_ceil(3) * 4);
     for chunk in bytes.chunks(3) {
         let b0 = chunk[0];
         let b1 = chunk.get(1).copied().unwrap_or(0);
@@ -197,7 +200,10 @@ pub fn parse_cookie_header(header_val: &str) -> HttpResponseCookie {
     let mut parts = header_val.split(';');
     let first = parts.next().unwrap_or("").trim();
     let (name, value) = if let Some(eq_idx) = first.find('=') {
-        (first[..eq_idx].trim().to_string(), first[eq_idx + 1..].trim().to_string())
+        (
+            first[..eq_idx].trim().to_string(),
+            first[eq_idx + 1..].trim().to_string(),
+        )
     } else {
         (first.to_string(), String::new())
     };

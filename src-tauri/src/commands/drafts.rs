@@ -30,6 +30,5 @@ pub async fn load_drafts(app: tauri::AppHandle) -> Result<String, String> {
     if !path.exists() {
         return Ok("".to_string());
     }
-    fs::read_to_string(&path)
-        .map_err(|e| format!("Failed to read drafts from {:?}: {}", path, e))
+    fs::read_to_string(&path).map_err(|e| format!("Failed to read drafts from {:?}: {}", path, e))
 }
