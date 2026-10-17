@@ -20,6 +20,7 @@ src-tauri/target/
 *.bak
 openpost_drafts.json
 *.corrupt.*
+.xwin-cache/
 
 # Environment & secrets
 .env
