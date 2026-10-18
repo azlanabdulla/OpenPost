@@ -12,6 +12,7 @@ import {
   Info,
   Search,
   Command,
+  Heart,
 } from 'lucide-react';
 import { useThemeStore } from '../../stores/themeStore';
 import { useRequestStore } from '../../stores/requestStore';
@@ -32,6 +33,7 @@ interface CommandPaletteProps {
   onOpenExport?: () => void;
   onOpenSettings?: () => void;
   onOpenAbout?: () => void;
+  onOpenSupport?: () => void;
   onOpenHistory?: () => void;
 }
 
@@ -42,6 +44,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   onOpenExport,
   onOpenSettings,
   onOpenAbout,
+  onOpenSupport,
   onOpenHistory,
 }) => {
   const [query, setQuery] = useState('');
@@ -162,6 +165,16 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       icon: <Info className="w-4 h-4 text-surface-muted" />,
       action: () => {
         if (onOpenAbout) onOpenAbout();
+        onClose();
+      },
+    },
+    {
+      id: 'support-open',
+      title: 'Support OpenPost',
+      category: 'General',
+      icon: <Heart className="w-4 h-4 text-rose-500" />,
+      action: () => {
+        if (onOpenSupport) onOpenSupport();
         onClose();
       },
     },

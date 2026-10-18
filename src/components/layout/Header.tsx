@@ -1,13 +1,15 @@
 import React from 'react';
-import { Sun, Moon, Monitor, Shield, ExternalLink, Upload, Download, Settings, Info, Command } from 'lucide-react';
+import { Sun, Moon, Monitor, Shield, ExternalLink, Upload, Download, Settings, Info, Command, Heart } from 'lucide-react';
 import { useThemeStore } from '../../stores/themeStore';
 import { CANONICAL_LINKS } from '../../config/links';
+import { openExternalUrl } from '../../utils/openLink';
 
 interface HeaderProps {
   onOpenImport?: () => void;
   onOpenExport?: () => void;
   onOpenSettings?: () => void;
   onOpenAbout?: () => void;
+  onOpenSupport?: () => void;
   onOpenCommandPalette?: () => void;
 }
 
@@ -16,6 +18,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenExport,
   onOpenSettings,
   onOpenAbout,
+  onOpenSupport,
   onOpenCommandPalette,
 }) => {
   const { mode, resolvedTheme, toggleMode } = useThemeStore();
@@ -119,6 +122,17 @@ export const Header: React.FC<HeaderProps> = ({
           <Settings className="w-4 h-4" />
         </button>
 
+        {/* Support OpenPost Button */}
+        <button
+          type="button"
+          aria-label="Support OpenPost"
+          onClick={onOpenSupport}
+          className="p-1.5 text-surface-muted hover:text-rose-500 hover:bg-surface-card rounded-md transition cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500"
+          title="Support OpenPost"
+        >
+          <Heart className="w-4 h-4" />
+        </button>
+
         {/* About Button */}
         <button
           type="button"
@@ -148,6 +162,10 @@ export const Header: React.FC<HeaderProps> = ({
           href={CANONICAL_LINKS.REPO}
           target="_blank"
           rel="noreferrer"
+          onClick={(e) => {
+            e.preventDefault();
+            openExternalUrl(CANONICAL_LINKS.REPO);
+          }}
           aria-label="OpenPost GitHub repository"
           className="text-xs text-surface-muted hover:text-brand-500 hover:bg-surface-card p-1.5 rounded-md flex items-center gap-1 transition focus-visible:ring-2 focus-visible:ring-brand-500"
           title="OpenPost GitHub Repository"

@@ -20,6 +20,7 @@ import { Modal } from './components/common/Modal';
 import { WelcomeModal } from './components/modals/WelcomeModal';
 import { SettingsModal } from './components/modals/SettingsModal';
 import { AboutModal } from './components/modals/AboutModal';
+import { SupportModal } from './components/modals/SupportModal';
 import { ExportModal } from './components/modals/ExportModal';
 import { ImportModal } from './components/modals/ImportModal';
 import { CommandPalette } from './components/common/CommandPalette';
@@ -35,6 +36,7 @@ export const App: React.FC = () => {
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isSupportOpen, setIsSupportOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [undefinedVarsModal, setUndefinedVarsModal] = useState<{
     request: HttpRequest;
@@ -232,6 +234,7 @@ export const App: React.FC = () => {
         onOpenExport={() => setIsExportOpen(true)}
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenAbout={() => setIsAboutOpen(true)}
+        onOpenSupport={() => setIsSupportOpen(true)}
         onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
       />
 
@@ -284,7 +287,12 @@ export const App: React.FC = () => {
       {/* 5. Modals System */}
       <WelcomeModal />
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
-      <AboutModal isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
+      <AboutModal
+        isOpen={isAboutOpen}
+        onClose={() => setIsAboutOpen(false)}
+        onOpenSupport={() => setIsSupportOpen(true)}
+      />
+      <SupportModal isOpen={isSupportOpen} onClose={() => setIsSupportOpen(false)} />
       <ExportModal isOpen={isExportOpen} onClose={() => setIsExportOpen(false)} />
       <ImportModal isOpen={isImportOpen} onClose={() => setIsImportOpen(false)} />
       <CommandPalette
@@ -294,6 +302,7 @@ export const App: React.FC = () => {
         onOpenExport={() => setIsExportOpen(true)}
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenAbout={() => setIsAboutOpen(true)}
+        onOpenSupport={() => setIsSupportOpen(true)}
       />
 
       {/* Undefined Variables Modal (OP-VAR-001) */}

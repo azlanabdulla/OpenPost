@@ -4,13 +4,15 @@ import { Github, Shield, Copy, Check, Heart } from 'lucide-react';
 import { createSanitizedDiagnostics } from '../../utils/sanitizer';
 import { useToastStore } from '../../stores/toastStore';
 import { CANONICAL_LINKS } from '../../config/links';
+import { openExternalUrl } from '../../utils/openLink';
 
 interface AboutModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenSupport?: () => void;
 }
 
-export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
+export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onOpenSupport }) => {
   const [copiedDiagnostics, setCopiedDiagnostics] = useState(false);
   const { addToast } = useToastStore();
 
@@ -97,11 +99,36 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
           </p>
         </div>
 
+        {/* Support OpenPost Row */}
+        <div className="p-2.5 rounded-lg bg-surface-panel/40 border border-surface-border flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Heart className="w-4 h-4 text-rose-500 fill-rose-500/20" />
+            <div>
+              <p className="font-semibold text-surface-text text-xs">Support OpenPost</p>
+              <p className="text-[11px] text-surface-muted">Free & open source forever. Sponsoring is completely optional.</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+              if (onOpenSupport) onOpenSupport();
+            }}
+            className="px-2.5 py-1 text-xs rounded-md bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 font-medium transition cursor-pointer"
+          >
+            Support
+          </button>
+        </div>
+
         <div className="pt-1 flex items-center gap-4 text-surface-muted">
           <a
             href={CANONICAL_LINKS.REPO}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={(e) => {
+              e.preventDefault();
+              openExternalUrl(CANONICAL_LINKS.REPO);
+            }}
             className="flex items-center gap-1.5 hover:text-surface-text transition"
           >
             <Github className="w-4 h-4" />
@@ -112,6 +139,10 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
             href={CANONICAL_LINKS.LICENSE}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={(e) => {
+              e.preventDefault();
+              openExternalUrl(CANONICAL_LINKS.LICENSE);
+            }}
             className="flex items-center gap-1.5 hover:text-surface-text transition"
           >
             <Shield className="w-4 h-4 text-emerald-500" />

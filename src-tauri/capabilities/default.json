@@ -4,6 +4,19 @@
   "description": "Minimal capabilities for OpenPost desktop client",
   "windows": ["main"],
   "permissions": [
-    "core:default"
+    "core:default",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        { "url": "https://github.com/azlanabdulla/OpenPost" },
+        { "url": "https://github.com/azlanabdulla/OpenPost/issues" },
+        { "url": "https://github.com/azlanabdulla/OpenPost/issues/new" },
+        { "url": "https://github.com/azlanabdulla/OpenPost/releases" },
+        { "url": "https://github.com/sponsors/azlanabdulla" },
+        { "url": "https://github.com/azlanabdulla/OpenPost/blob/main/LICENSE" },
+        { "url": "https://github.com/azlanabdulla/OpenPost/security" },
+        { "url": "https://github.com/azlanabdulla/OpenPost/security/advisories/new" }
+      ]
+    }
   ]
 }
