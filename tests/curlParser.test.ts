@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseCurlCommand } from '../src/utils/curlParser';
+import { parseCurlCommand, CURL_UNSUPPORTED_FLAG_DESCRIPTIONS } from '../src/utils/curlParser';
 
 describe('cURL Import Parser Engine (OP-R2-015)', () => {
   it('parses basic GET cURL command', () => {
@@ -36,11 +36,16 @@ describe('cURL Import Parser Engine (OP-R2-015)', () => {
     expect(request.auth.basic?.password).toBe('secret123');
   });
 
-  it('detects and reports unsupported cURL flags', () => {
+  it('detects and reports unsupported cURL flags with user-facing descriptions', () => {
     const curl = 'curl https://api.example.com/stream --limit-rate 50k --socks5 127.0.0.1:9050';
     const { unsupportedFlags } = parseCurlCommand(curl);
 
     expect(unsupportedFlags).toContain('--limit-rate');
     expect(unsupportedFlags).toContain('--socks5');
+
+    for (const flag of unsupportedFlags) {
+      expect(CURL_UNSUPPORTED_FLAG_DESCRIPTIONS[flag]).toBeDefined();
+      expect(typeof CURL_UNSUPPORTED_FLAG_DESCRIPTIONS[flag]).toBe('string');
+    }
   });
 });

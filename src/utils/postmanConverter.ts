@@ -17,6 +17,7 @@ export interface PostmanConvertResult {
 }
 
 const MAX_FOLDER_DEPTH = 10;
+const MAX_IMPORT_BYTES = 10 * 1024 * 1024; // 10MB limit
 
 /**
  * Parses and converts a Postman v2.0/v2.1 Collection JSON string into OpenPost requests.
@@ -28,6 +29,15 @@ export function convertPostmanCollection(jsonString: string): PostmanConvertResu
       requests: [],
       summary: { collectionName: '', requestsCount: 0, foldersCount: 0, skippedFeatures: [] },
       error: 'OP-IMP-001: Import data is empty',
+    };
+  }
+
+  if (jsonString.length > MAX_IMPORT_BYTES) {
+    return {
+      collectionName: '',
+      requests: [],
+      summary: { collectionName: '', requestsCount: 0, foldersCount: 0, skippedFeatures: [] },
+      error: `OP-IMP-005: Import content exceeds maximum allowed size of 10 MB (${(jsonString.length / (1024 * 1024)).toFixed(1)} MB provided)`,
     };
   }
 

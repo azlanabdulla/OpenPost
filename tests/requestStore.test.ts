@@ -24,7 +24,7 @@ describe('useRequestStore', () => {
 
     expect(tabs.length).toBe(2);
     expect(activeTabId).toBe(tabs[1].id);
-    expect(tabs[1].request.name).toBe('New Request');
+    expect(tabs[1].request.name).toBe('Second Tab');
   });
 
   it('updates method and marks tab as dirty', () => {

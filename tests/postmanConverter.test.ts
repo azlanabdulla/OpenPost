@@ -63,4 +63,14 @@ describe('Postman Collection v2.1 Import Converter (OP-R2-014)', () => {
 
     expect(result.summary.skippedFeatures.some((f) => f.includes('maximum depth'))).toBe(true);
   });
+
+  it('rejects oversized collections exceeding the 10MB limit with OP-IMP-005', () => {
+    // Generate a payload slightly over 10 MB (10 * 1024 * 1024 + 1 bytes)
+    const largeDummy = 'x'.repeat(10 * 1024 * 1024 + 2);
+    const result = convertPostmanCollection(largeDummy);
+
+    expect(result.error).toBeDefined();
+    expect(result.error).toContain('OP-IMP-005');
+    expect(result.error).toContain('10 MB');
+  });
 });

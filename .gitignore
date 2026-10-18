@@ -18,6 +18,9 @@ src-tauri/target/
 *.db-journal
 *.db.bak*
 *.bak
+*.tmp
+test_*.db
+test_*.ps1
 openpost_drafts.json
 *.corrupt.*
 .xwin-cache/

@@ -111,7 +111,7 @@ export function createDefaultRequest(overrides?: Partial<HttpRequest>): HttpRequ
 
 export function createDefaultTab(name = 'New Request', overrides?: Partial<HttpRequest>): TabItem {
   const req = createDefaultRequest(overrides);
-  req.name = name;
+  req.name = overrides?.name || name;
   const initialParams = extractParamsFromUrl(req.url);
   if (initialParams.length > 0) {
     req.params = initialParams;

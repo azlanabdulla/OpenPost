@@ -59,22 +59,24 @@ function tokenizeCurl(command: string): string[] {
   return tokens;
 }
 
-const KNOWN_UNSUPPORTED_FLAGS = new Set([
-  '--socks5',
-  '--socks5-hostname',
-  '--proxy',
-  '-x',
-  '--limit-rate',
-  '--cert-status',
-  '--compressed',
-  '--cookie-jar',
-  '-c',
-  '-b',
-  '--cookie',
-  '--retry',
-  '-m',
-  '--max-time',
-]);
+export const CURL_UNSUPPORTED_FLAG_DESCRIPTIONS: Record<string, string> = {
+  '--socks5': 'SOCKS5 proxy protocol is not currently supported.',
+  '--socks5-hostname': 'SOCKS5 proxy hostname resolution is not currently supported.',
+  '--proxy': 'HTTP/HTTPS proxy routing is not currently supported in this client build.',
+  '-x': 'HTTP/HTTPS proxy routing is not currently supported in this client build.',
+  '--limit-rate': 'Network bandwidth rate limiting is omitted.',
+  '--cert-status': 'OCSP certificate status verification is skipped.',
+  '--compressed': 'Payload compression/decompression is handled transparently by the engine.',
+  '--cookie-jar': 'External cookie jar export files are not used (cookies are managed in the Cookies tab).',
+  '-c': 'External cookie jar files are not used.',
+  '-b': 'External cookie storage files are not used (cookies can be passed via Cookie header).',
+  '--cookie': 'External cookie files are omitted (cookies can be passed via Cookie header).',
+  '--retry': 'Automatic request retries are omitted; requests execute on demand.',
+  '-m': 'Per-request timeout overrides are omitted (default client timeout is applied).',
+  '--max-time': 'Per-request timeout overrides are omitted (default client timeout is applied).',
+};
+
+const KNOWN_UNSUPPORTED_FLAGS = new Set(Object.keys(CURL_UNSUPPORTED_FLAG_DESCRIPTIONS));
 
 /**
  * Parses a cURL command into an OpenPost HttpRequest.

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
-import { Terminal, FileJson, AlertTriangle, Layers, ArrowRight } from 'lucide-react';
+import { Terminal, FileJson, AlertTriangle, Layers, ArrowRight, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import { useRequestStore } from '../../stores/requestStore';
 import { useToastStore } from '../../stores/toastStore';
-import { parseCurlCommand } from '../../utils/curlParser';
+import { parseCurlCommand, CurlParseResult, CURL_UNSUPPORTED_FLAG_DESCRIPTIONS } from '../../utils/curlParser';
 import { convertPostmanCollection, PostmanConvertResult } from '../../utils/postmanConverter';
 
 interface ImportModalProps {
@@ -13,11 +13,14 @@ interface ImportModalProps {
 
 type ImportType = 'curl' | 'postman';
 
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB limit
+
 export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => {
   const [importType, setImportType] = useState<ImportType>('curl');
   const [inputContent, setInputContent] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [importSummary, setImportSummary] = useState<PostmanConvertResult | null>(null);
+  const [curlReport, setCurlReport] = useState<CurlParseResult | null>(null);
 
   const { addTab } = useRequestStore();
   const { addToast } = useToastStore();
@@ -26,6 +29,7 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
     setInputContent('');
     setErrorMessage(null);
     setImportSummary(null);
+    setCurlReport(null);
   };
 
   const handleClose = () => {
@@ -36,6 +40,13 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      setErrorMessage(
+        `OP-IMP-005: File size (${(file.size / (1024 * 1024)).toFixed(1)} MB) exceeds maximum allowed limit of 10 MB.`
+      );
+      return;
+    }
 
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -59,25 +70,20 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
 
     if (importType === 'curl') {
       try {
-        const { request, unsupportedFlags } = parseCurlCommand(inputContent);
-        addTab({ ...request, name: request.name || 'Imported cURL' });
-
-        if (unsupportedFlags.length > 0) {
+        const result = parseCurlCommand(inputContent);
+        if (result.unsupportedFlags.length > 0) {
+          // Present dedicated cURL Unsupported-Flag Report
+          setCurlReport(result);
+        } else {
+          // Direct import if clean
+          addTab({ ...result.request, name: result.request.name || 'Imported cURL' });
           addToast({
-            type: 'info',
-            title: 'cURL Flags Skipped',
-            message: `Unsupported flags ignored: ${unsupportedFlags.join(', ')}`,
-            durationMs: 4000,
+            type: 'success',
+            title: 'cURL Imported',
+            message: `${result.request.method} request imported successfully into a new tab.`,
           });
+          handleClose();
         }
-
-        addToast({
-          type: 'success',
-          title: 'cURL Imported',
-          message: `${request.method} request imported successfully into a new tab.`,
-        });
-
-        handleClose();
       } catch (err: any) {
         setErrorMessage(`Failed to parse cURL command: ${err?.message || 'Syntax error'}`);
       }
@@ -97,6 +103,17 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
       // Show summary screen
       setImportSummary(result);
     }
+  };
+
+  const handleConfirmCurlImport = () => {
+    if (!curlReport) return;
+    addTab({ ...curlReport.request, name: curlReport.request.name || 'Imported cURL' });
+    addToast({
+      type: 'success',
+      title: 'cURL Imported',
+      message: `${curlReport.request.method} request imported (unsupported flags omitted).`,
+    });
+    handleClose();
   };
 
   const handleConfirmSummaryImport = () => {
@@ -119,10 +136,40 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title="Import Requests"
-      description="Import from cURL command line or Postman Collection v2.1 JSON"
+      title={
+        curlReport
+          ? 'cURL Unsupported-Flag Report'
+          : importSummary
+          ? 'Postman Collection Summary'
+          : 'Import Requests'
+      }
+      description={
+        curlReport
+          ? 'Review unsupported or omitted cURL flags before importing into workspace'
+          : importSummary
+          ? 'Review requests, folders, and compatibility notes before importing'
+          : 'Import from cURL command line or Postman Collection v2.1 JSON'
+      }
       footer={
-        importSummary ? (
+        curlReport ? (
+          <div className="flex items-center justify-between w-full">
+            <button
+              type="button"
+              onClick={() => setCurlReport(null)}
+              className="px-3 py-1.5 rounded-lg border border-surface-border hover:bg-surface-panel text-slate-300 text-xs transition cursor-pointer"
+            >
+              Back / Edit cURL
+            </button>
+            <button
+              type="button"
+              onClick={handleConfirmCurlImport}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-medium text-xs shadow-sm transition cursor-pointer"
+            >
+              <span>Import Request (Omit Flags)</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        ) : importSummary ? (
           <div className="flex items-center justify-between w-full">
             <button
               type="button"
@@ -154,14 +201,60 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
               onClick={handleProcessImport}
               className="px-4 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-medium text-xs shadow-sm transition cursor-pointer"
             >
-              Import
+              Process Import
             </button>
           </>
         )
       }
     >
-      {importSummary ? (
-        /* Import Summary View (OP-R2-014 requirement) */
+      {curlReport ? (
+        /* cURL Unsupported-Flag Report View */
+        <div className="py-2 space-y-4 text-xs text-slate-200">
+          <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 space-y-1.5">
+            <h5 className="font-semibold text-amber-300 flex items-center gap-1.5 text-xs">
+              <ShieldAlert className="w-4 h-4 text-amber-400" />
+              {curlReport.unsupportedFlags.length} Unsupported Flag(s) Detected
+            </h5>
+            <p className="text-[11px] text-slate-300">
+              The following command-line flags cannot be executed directly in OpenPost's desktop HTTP engine and will be omitted:
+            </p>
+          </div>
+
+          <div className="border border-surface-border rounded-lg overflow-hidden divide-y divide-surface-border bg-surface-panel/30">
+            {curlReport.unsupportedFlags.map((flag) => {
+              const description =
+                CURL_UNSUPPORTED_FLAG_DESCRIPTIONS[flag] ||
+                'Flag is not supported in desktop HTTP requests and will be ignored.';
+              return (
+                <div key={flag} className="p-2.5 flex items-start justify-between gap-3 text-xs">
+                  <div className="font-mono font-semibold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 shrink-0">
+                    {flag}
+                  </div>
+                  <div className="text-[11px] text-slate-300 flex-1">{description}</div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="p-3 rounded-lg bg-surface-panel/40 border border-surface-border space-y-1.5">
+            <div className="font-semibold text-slate-300 flex items-center gap-1.5 text-[11px]">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+              Request will be imported as:
+            </div>
+            <div className="flex items-center gap-2 font-mono text-[11px] pt-1">
+              <span className="px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-300 font-bold">
+                {curlReport.request.method}
+              </span>
+              <span className="text-slate-200 truncate">{curlReport.request.url || 'No URL specified'}</span>
+            </div>
+            <div className="text-[10px] text-slate-400 pt-1">
+              Headers: {curlReport.request.headers.length} | Body type: {curlReport.request.body.type} | SSL verification:{' '}
+              {curlReport.request.settings?.verifySsl === false ? 'Disabled (-k)' : 'Enabled'}
+            </div>
+          </div>
+        </div>
+      ) : importSummary ? (
+        /* Postman Collection Summary View */
         <div className="py-2 space-y-4 text-xs text-slate-200">
           <div className="p-3 rounded-lg bg-surface-panel/40 border border-surface-border space-y-2">
             <h4 className="font-semibold text-slate-100 flex items-center gap-2 text-sm">
@@ -181,6 +274,44 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
                   {importSummary.summary.foldersCount}
                 </span>
               </div>
+            </div>
+          </div>
+
+          {/* Requests Preview List */}
+          <div className="space-y-1.5">
+            <div className="text-[11px] font-semibold text-slate-300 flex items-center justify-between">
+              <span>Collection Endpoints ({importSummary.requests.length})</span>
+              <span className="text-[10px] text-slate-400">Ready to import</span>
+            </div>
+            <div className="max-h-36 overflow-y-auto rounded-lg border border-surface-border bg-surface-panel/20 divide-y divide-surface-border/50">
+              {importSummary.requests.slice(0, 10).map((req, idx) => (
+                <div key={idx} className="p-2 flex items-center gap-2 text-[11px]">
+                  <span
+                    className={`px-1.5 py-0.5 rounded text-[10px] font-bold font-mono ${
+                      req.method === 'GET'
+                        ? 'bg-blue-500/20 text-blue-300'
+                        : req.method === 'POST'
+                        ? 'bg-emerald-500/20 text-emerald-300'
+                        : req.method === 'PUT'
+                        ? 'bg-amber-500/20 text-amber-300'
+                        : req.method === 'DELETE'
+                        ? 'bg-rose-500/20 text-rose-300'
+                        : 'bg-purple-500/20 text-purple-300'
+                    }`}
+                  >
+                    {req.method}
+                  </span>
+                  <span className="font-medium text-slate-200 truncate flex-1">{req.name}</span>
+                  <span className="text-[10px] text-slate-400 font-mono truncate max-w-[180px]">
+                    {req.url}
+                  </span>
+                </div>
+              ))}
+              {importSummary.requests.length > 10 && (
+                <div className="p-1.5 text-center text-[10px] text-slate-400 bg-surface-panel/40">
+                  + {importSummary.requests.length - 10} additional request(s)
+                </div>
+              )}
             </div>
           </div>
 
@@ -264,7 +395,7 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
             <div className="space-y-3">
               <div>
                 <label className="block text-[11px] text-slate-400 mb-1">
-                  Upload Collection File (.json)
+                  Upload Collection File (.json, max 10MB)
                 </label>
                 <input
                   type="file"
