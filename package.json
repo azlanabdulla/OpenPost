@@ -2,6 +2,12 @@
   "name": "openpost",
   "private": true,
   "version": "0.1.0",
+  "description": "The free, open-source Postman alternative. No account. No limits. Fully local.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azlanabdulla/OpenPost.git"
+  },
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",

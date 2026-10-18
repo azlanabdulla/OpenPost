@@ -2,10 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   mergeVariablesByPrecedence,
   detectVariableCycles,
-  resolveVariables,
   resolveInheritedAuth,
   resolveRequestVariables,
-  extractVariables,
 } from '../src/utils/variableResolver';
 import { HttpRequest, AuthConfig } from '../src/types/http';
 

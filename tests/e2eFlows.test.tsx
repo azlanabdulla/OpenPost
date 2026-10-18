@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useRequestStore, createDefaultRequest } from '../src/stores/requestStore';
-import { useHistoryStore, sanitizeClientHistorySecrets } from '../src/stores/historyStore';
+import { sanitizeClientHistorySecrets } from '../src/stores/historyStore';
 import { resolveRequestVariables } from '../src/utils/variableResolver';
 import { buildPostmanExport, buildOpenPostExport, getExportFilename } from '../src/utils/exporter';
 import { convertPostmanCollection } from '../src/utils/postmanConverter';

@@ -22,12 +22,20 @@ pub async fn save_drafts(app: tauri::AppHandle, drafts_json: String) -> Result<(
     let temp_path = path.with_extension("tmp");
 
     // 1. Write atomically to temp file
-    fs::write(&temp_path, &drafts_json)
-        .map_err(|e| format!("WRITE_FAILED: Failed to write to temporary file {:?}: {}", temp_path, e))?;
+    fs::write(&temp_path, &drafts_json).map_err(|e| {
+        format!(
+            "WRITE_FAILED: Failed to write to temporary file {:?}: {}",
+            temp_path, e
+        )
+    })?;
 
     // 2. Atomically rename temp file over destination
-    fs::rename(&temp_path, &path)
-        .map_err(|e| format!("WRITE_FAILED: Failed to atomically commit drafts to {:?}: {}", path, e))?;
+    fs::rename(&temp_path, &path).map_err(|e| {
+        format!(
+            "WRITE_FAILED: Failed to atomically commit drafts to {:?}: {}",
+            path, e
+        )
+    })?;
 
     // 3. Keep a backup of the latest valid draft file
     let bak_path = path.with_extension("bak");
@@ -56,11 +64,17 @@ pub async fn load_drafts(app: tauri::AppHandle) -> Result<String, String> {
                         }
                     }
                 }
-                return Err(format!("CORRUPTED_FILE: Drafts file at {:?} is corrupted and has invalid JSON", path));
+                return Err(format!(
+                    "CORRUPTED_FILE: Drafts file at {:?} is corrupted and has invalid JSON",
+                    path
+                ));
             }
             Ok(content)
         }
-        Err(e) => Err(format!("READ_FAILED: Failed to read drafts from {:?}: {}", path, e)),
+        Err(e) => Err(format!(
+            "READ_FAILED: Failed to read drafts from {:?}: {}",
+            path, e
+        )),
     }
 }
 
@@ -77,4 +91,3 @@ pub async fn get_drafts_metadata(app: tauri::AppHandle) -> Result<u64, String> {
         .map_err(|e| e.to_string())?;
     Ok(duration.as_millis() as u64)
 }
-

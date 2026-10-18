@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { VirtualList } from '../src/components/common/VirtualList';
 
@@ -10,7 +9,7 @@ describe('VirtualList Component (1,000+ requests performance)', () => {
       name: `Request ${i}`,
     }));
 
-    const { container } = render(
+    render(
       <VirtualList
         items={items}
         itemHeight={30}

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { useRequestStore, createDefaultTab } from '../src/stores/requestStore';
 import { useToastStore } from '../src/stores/toastStore';
 import { useHistoryStore } from '../src/stores/historyStore';
