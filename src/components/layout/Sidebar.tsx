@@ -3,12 +3,23 @@ import { FolderTree, History, Globe2, Plus, Search, ChevronRight, Upload } from 
 import { useRequestStore } from '../../stores/requestStore';
 import { useHistoryStore } from '../../stores/historyStore';
 import { HistoryPanel } from '../history/HistoryPanel';
+import { VirtualList } from '../common/VirtualList';
 
 type SidebarTab = 'collections' | 'history' | 'environments';
 
 interface SidebarProps {
   onOpenImport?: () => void;
 }
+
+const METHOD_COLORS: Record<string, string> = {
+  GET: 'text-emerald-500',
+  POST: 'text-amber-500',
+  PUT: 'text-blue-500',
+  PATCH: 'text-purple-500',
+  DELETE: 'text-red-500',
+  HEAD: 'text-slate-400',
+  OPTIONS: 'text-teal-500',
+};
 
 const SIDEBAR_COLLAPSED_KEY = 'openpost_sidebar_sample_expanded';
 
@@ -28,6 +39,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenImport }) => {
   });
 
   const { tabs, activeTabId, setActiveTab: setActiveWorkspaceTab, addTab } = useRequestStore();
+
+  const filteredTabs = tabs.filter((t) => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return t.name.toLowerCase().includes(q) || t.request.url.toLowerCase().includes(q);
+  });
 
   const toggleCollection = () => {
     setIsSampleExpanded((prev) => {
@@ -140,7 +157,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenImport }) => {
           <div className="space-y-1">
             <div className="flex items-center justify-between text-[11px] text-surface-muted px-2 py-1">
               <span>My Workspace</span>
-              <span className="text-[10px] bg-surface-panel text-surface-text px-1.5 py-0.2 rounded font-mono border border-surface-border">1</span>
+              <span className="text-[10px] bg-surface-panel text-surface-text px-1.5 py-0.2 rounded font-mono border border-surface-border">{tabs.length}</span>
             </div>
 
             {/* Collapsible starter collection item */}
@@ -161,34 +178,69 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenImport }) => {
                 />
                 <FolderTree className="w-3.5 h-3.5 text-brand-primary shrink-0" />
                 <span className="truncate flex-1">Sample REST Collection</span>
+                <span className="text-[10px] text-surface-muted font-mono">{filteredTabs.length}</span>
               </div>
 
               {/* Children when expanded */}
               {isSampleExpanded && (
-                <div className="pl-6 pr-1 py-1 space-y-1">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const existing = tabs.find((t) => t.name === 'Get Todo');
-                      if (existing) {
-                        setActiveWorkspaceTab(existing.id);
-                      } else {
-                        addTab({
-                          name: 'Get Todo',
-                          method: 'GET',
-                          url: 'https://jsonplaceholder.typicode.com/todos/1',
-                        });
-                      }
-                    }}
-                    className={`w-full flex items-center gap-2 px-2 py-1 rounded text-xs text-left transition cursor-pointer ${
-                      tabs.some((t) => t.id === activeTabId && t.name === 'Get Todo')
-                        ? 'bg-surface-panel text-brand-primary font-medium'
-                        : 'text-surface-muted hover:text-surface-text hover:bg-surface-panel/30'
-                    }`}
-                  >
-                    <span className="text-[10px] font-bold font-mono text-emerald-500">GET</span>
-                    <span className="truncate">Get Todo</span>
-                  </button>
+                <div className="pl-4 pr-1 py-1">
+                  {filteredTabs.length === 0 ? (
+                    <div className="py-2 text-[11px] text-surface-muted text-center">
+                      {searchQuery ? 'No matching requests' : 'No requests in collection'}
+                    </div>
+                  ) : filteredTabs.length > 30 ? (
+                    <VirtualList
+                      items={filteredTabs}
+                      itemHeight={30}
+                      maxHeight="calc(100vh - 240px)"
+                      ariaLabel="Collection requests"
+                      renderItem={(t) => (
+                        <button
+                          key={t.id}
+                          type="button"
+                          onClick={() => setActiveWorkspaceTab(t.id)}
+                          className={`w-full flex items-center gap-2 px-2 py-1 rounded text-xs text-left transition cursor-pointer ${
+                            t.id === activeTabId
+                              ? 'bg-surface-panel text-brand-primary font-medium'
+                              : 'text-surface-muted hover:text-surface-text hover:bg-surface-panel/30'
+                          }`}
+                        >
+                          <span
+                            className={`text-[10px] font-bold font-mono shrink-0 ${
+                              METHOD_COLORS[t.request.method] || 'text-emerald-500'
+                            }`}
+                          >
+                            {t.request.method}
+                          </span>
+                          <span className="truncate flex-1">{t.name}</span>
+                        </button>
+                      )}
+                    />
+                  ) : (
+                    <div className="space-y-0.5">
+                      {filteredTabs.map((t) => (
+                        <button
+                          key={t.id}
+                          type="button"
+                          onClick={() => setActiveWorkspaceTab(t.id)}
+                          className={`w-full flex items-center gap-2 px-2 py-1 rounded text-xs text-left transition cursor-pointer ${
+                            t.id === activeTabId
+                              ? 'bg-surface-panel text-brand-primary font-medium'
+                              : 'text-surface-muted hover:text-surface-text hover:bg-surface-panel/30'
+                          }`}
+                        >
+                          <span
+                            className={`text-[10px] font-bold font-mono shrink-0 ${
+                              METHOD_COLORS[t.request.method] || 'text-emerald-500'
+                            }`}
+                          >
+                            {t.request.method}
+                          </span>
+                          <span className="truncate flex-1">{t.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

@@ -196,6 +196,20 @@
   background-color: var(--cm-selection) !important;
 }
 
+/* Accessibility & Internationalization: RTL and Bidirectional Text Support */
+[dir="rtl"] {
+  direction: rtl;
+}
+
+[dir="rtl"] .cm-editor {
+  direction: ltr; /* Retain code editor LTR flow for code syntax */
+}
+
+input,
+textarea {
+  unicode-bidi: plaintext;
+}
+
 /* Accessibility: WCAG Reduced Motion preference */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -210,3 +224,4 @@
     transition-duration: 0s !important;
   }
 }
+
