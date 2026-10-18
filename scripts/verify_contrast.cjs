@@ -102,6 +102,8 @@ const checks = [
   { theme: 'LIGHT', name: 'Brand Link Text on Canvas', fg: lightPalette.brand, bg: lightPalette.bg, min: 4.5 },
 
   // Non-Text UI Components (Borders, Focus Rings)
+  { theme: 'LIGHT', name: 'UI Border against Canvas', fg: lightPalette.border, bg: lightPalette.bg, min: 1.5 },
+  { theme: 'LIGHT', name: 'UI Border against Card', fg: lightPalette.border, bg: lightPalette.card, min: 1.5 },
   { theme: 'LIGHT', name: 'Focus Ring against Canvas', fg: lightPalette.focusRing, bg: lightPalette.bg, min: 3.0 },
   { theme: 'LIGHT', name: 'Focus Ring against Card', fg: lightPalette.focusRing, bg: lightPalette.card, min: 3.0 },
 
@@ -130,6 +132,8 @@ const checks = [
   { theme: 'DARK', name: 'Brand Link Text on Canvas', fg: darkPalette.brand, bg: darkPalette.bg, min: 4.5 },
 
   // Non-Text UI Components (Borders, Focus Rings)
+  { theme: 'DARK', name: 'UI Border against Canvas', fg: darkPalette.border, bg: darkPalette.bg, min: 1.5 },
+  { theme: 'DARK', name: 'UI Border against Card', fg: darkPalette.border, bg: darkPalette.card, min: 1.5 },
   { theme: 'DARK', name: 'Focus Ring against Canvas', fg: darkPalette.focusRing, bg: darkPalette.bg, min: 3.0 },
   { theme: 'DARK', name: 'Focus Ring against Card', fg: darkPalette.focusRing, bg: darkPalette.card, min: 3.0 },
 
