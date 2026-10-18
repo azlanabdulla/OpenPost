@@ -27,7 +27,7 @@ export interface RequestBody {
   multipart?: MultipartField[];
 }
 
-export type AuthType = 'none' | 'bearer' | 'basic' | 'apikey';
+export type AuthType = 'inherit' | 'none' | 'bearer' | 'basic' | 'apikey';
 
 export interface AuthConfig {
   type: AuthType;

@@ -1,4 +1,4 @@
-import { HttpRequest } from './http';
+import { HttpRequest, AuthConfig } from './http';
 
 export interface CollectionItemRequest {
   id: string;
@@ -12,6 +12,8 @@ export interface CollectionFolder {
   type: 'folder';
   name: string;
   description?: string;
+  auth?: AuthConfig;
+  variables?: Record<string, string>;
   items: Array<CollectionItemRequest | CollectionFolder>;
 }
 
@@ -21,6 +23,8 @@ export interface OpenPostCollection {
   id: string;
   name: string;
   description?: string;
-  variables?: Array<{ key: string; value: string; enabled: boolean }>;
+  auth?: AuthConfig;
+  variables?: Array<{ key: string; value: string; enabled: boolean }> | Record<string, string>;
   items: Array<CollectionItemRequest | CollectionFolder>;
 }
+

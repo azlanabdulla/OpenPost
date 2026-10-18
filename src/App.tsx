@@ -12,7 +12,11 @@ import { SplitPane } from './components/common/SplitPane';
 import { ToastContainer } from './components/common/ToastContainer';
 import { executeHttpRequest, HttpExecutionError } from './utils/httpExecutor';
 import { normalizeAndValidateUrl } from './utils/url';
-import { scanRequestForUndefinedVariables } from './utils/variableResolver';
+import {
+  scanRequestForUndefinedVariables,
+  mergeVariablesByPrecedence,
+  resolveRequestVariables,
+} from './utils/variableResolver';
 import { Modal } from './components/common/Modal';
 import { WelcomeModal } from './components/modals/WelcomeModal';
 import { SettingsModal } from './components/modals/SettingsModal';
@@ -159,17 +163,31 @@ export const App: React.FC = () => {
       });
     }
 
-    // Scan for undefined template variables {{variable}}
-    const missingVars = scanRequestForUndefinedVariables(effectiveRequest, {});
-    if (missingVars.length > 0) {
-      setUndefinedVarsModal({
-        request: effectiveRequest,
-        undefinedVars: missingVars,
+    // Merge variables by precedence: request > folder > environment > collection > global (OP-R2-019)
+    const mergedVariables = mergeVariablesByPrecedence({});
+
+    // Resolve variables, cycle detection, and inherited auth
+    const resolution = resolveRequestVariables(effectiveRequest, mergedVariables);
+    if (resolution.hasCycle) {
+      addToast({
+        type: 'error',
+        title: 'Variable Cycle Detected (OP-VAR-002)',
+        message: `Circular reference detected in variables: ${resolution.cycleChain?.join(' -> ') || 'cycle detected'}. Request aborted.`,
+        durationMs: 7000,
       });
       return;
     }
 
-    await executeSend(effectiveRequest);
+    // Scan for undefined template variables {{variable}}
+    if (resolution.undefinedVars.length > 0) {
+      setUndefinedVarsModal({
+        request: resolution.resolvedRequest,
+        undefinedVars: resolution.undefinedVars,
+      });
+      return;
+    }
+
+    await executeSend(resolution.resolvedRequest);
   }, [activeTab, setUrl, addToast, executeSend]);
 
   const handleCancel = useCallback(() => {
