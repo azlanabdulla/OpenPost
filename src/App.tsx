@@ -210,10 +210,7 @@ export const App: React.FC = () => {
       {/* 2. Main Workspace Layout */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left Sidebar */}
-        <Sidebar
-          onOpenSettings={() => setIsSettingsOpen(true)}
-          onOpenImport={() => setIsImportOpen(true)}
-        />
+        <Sidebar onOpenImport={() => setIsImportOpen(true)} />
 
         {/* Center / Right Content Panel */}
         <main className="flex-1 flex flex-col overflow-hidden bg-surface-card">
