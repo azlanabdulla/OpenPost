@@ -26,6 +26,9 @@ public class WindowSnap {
     [DllImport("user32.dll")]
     public static extern bool SetForegroundWindow(IntPtr hWnd);
 
+    [DllImport("user32.dll")]
+    public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+
     [StructLayout(LayoutKind.Sequential)]
     public struct RECT {
         public int Left, Top, Right, Bottom;
@@ -50,6 +53,8 @@ public class WindowSnap {
         if (hWnd == IntPtr.Zero) return false;
 
         ShowWindow(hWnd, 9); // SW_RESTORE
+        MoveWindow(hWnd, 40, 40, 1366, 850, true);
+        System.Threading.Thread.Sleep(200);
         SetForegroundWindow(hWnd);
 
         RECT r;
