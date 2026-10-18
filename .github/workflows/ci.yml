@@ -74,7 +74,7 @@ jobs:
         run: cargo clippy --manifest-path src-tauri/Cargo.toml -- -D warnings
 
       - name: Cargo Test
-        run: cargo test --manifest-path src-tauri/Cargo.toml --test history_unit_tests
+        run: cargo test --manifest-path src-tauri/Cargo.toml --tests
 
   rust-linux:
     name: Rust Backend Checks (Ubuntu Linux)
@@ -115,4 +115,4 @@ jobs:
         run: cargo clippy --manifest-path src-tauri/Cargo.toml -- -D warnings
 
       - name: Cargo Test
-        run: cargo test --manifest-path src-tauri/Cargo.toml --test history_unit_tests
+        run: cargo test --manifest-path src-tauri/Cargo.toml --tests
