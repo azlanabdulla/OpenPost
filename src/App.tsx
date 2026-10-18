@@ -202,7 +202,7 @@ export const App: React.FC = () => {
   }, [activeTab, cancelRequest]);
 
   // One-click action to disable SSL and retry immediately
-  const handleDisableSslAndRetry = useCallback(() => {
+  const handleDisableSslAndRetry = useCallback(async () => {
     if (!activeTab) return;
     setSettings({ verifySsl: false });
     addToast({
@@ -210,11 +210,17 @@ export const App: React.FC = () => {
       title: 'SSL Verification Disabled',
       message: 'Certificate verification has been turned off for this request.',
     });
-    // Trigger retry with updated settings
-    setTimeout(() => {
-      handleSend();
-    }, 50);
-  }, [activeTab, setSettings, addToast, handleSend]);
+    const updatedRequest: HttpRequest = {
+      ...activeTab.request,
+      settings: {
+        ...activeTab.request.settings,
+        verifySsl: false,
+      },
+    };
+    const mergedVariables = mergeVariablesByPrecedence({});
+    const resolution = resolveRequestVariables(updatedRequest, mergedVariables);
+    await executeSend(resolution.resolvedRequest);
+  }, [activeTab, setSettings, addToast, executeSend]);
 
   if (!activeTab) return null;
 

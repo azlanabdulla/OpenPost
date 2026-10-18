@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { HttpResponse } from '../../types/http';
-import { HttpExecutionError, isHttpExecutionError } from '../../utils/httpExecutor';
+import { HttpExecutionError, isHttpExecutionError, isTauriEnvironment } from '../../utils/httpExecutor';
 import { CodeMirrorEditor } from '../../editor/CodeMirrorEditor';
 import { HTTP_STATUS_HINTS } from '../../messages';
 import { useToastStore } from '../../stores/toastStore';
@@ -210,8 +210,8 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
             </div>
           </div>
 
-          {/* Special SSL Action Button */}
-          {errorObj.isSslError && onDisableSslAndRetry && (
+          {/* Special SSL Action Button (Only in Tauri desktop app, hidden in browser preview) */}
+          {errorObj.isSslError && onDisableSslAndRetry && isTauriEnvironment() && (
             <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg">
               <div className="flex items-center gap-2 text-xs text-amber-500 font-medium mb-1.5">
                 <ShieldAlert className="w-4 h-4 text-amber-500" />

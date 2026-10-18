@@ -278,30 +278,16 @@ export async function executeHttpRequest(
     }
 
     const rawMessage = err instanceof Error ? err.message : String(err);
-    const lowerMsg = rawMessage.toLowerCase();
-    const isSsl = lowerMsg.includes('cert') || lowerMsg.includes('ssl') || lowerMsg.includes('tls') || url.includes('self-signed') || url.includes('badssl');
-
-    if (isSsl) {
-      const sslError: HttpExecutionError = {
-        code: 'OP-SSL-001',
-        title: 'SSL/TLS Certificate Verification Failed',
-        message: 'SSL/TLS certificate verification failed. The certificate may be self-signed, expired, or invalid.',
-        isSslError: true,
-        technicalDetails: rawMessage,
-        durationMs,
-      };
-      throw sslError;
-    }
-
     const isOffline = typeof navigator !== 'undefined' && !navigator.onLine;
 
     const netError: HttpExecutionError = {
       code: isOffline ? 'OP-NET-001' : 'OP-NET-999',
-      title: isOffline ? 'No Network Connection' : 'Request Connection Failed',
+      title: isOffline ? 'No Network Connection' : 'Browser Network / Security Block',
       message: isOffline
         ? 'Your computer appears to be offline.'
-        : `Could not reach ${url}. Note: in browser preview mode, cross-origin requests are subject to browser CORS limits. OpenPost desktop uses Tauri Rust reqwest with zero CORS restrictions.`,
+        : 'The browser blocked or could not complete this request (CORS, network or certificate). Use the OpenPost desktop app for full functionality.',
       technicalDetails: rawMessage,
+      isSslError: false,
       durationMs,
     };
     throw netError;
