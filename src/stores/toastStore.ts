@@ -9,6 +9,10 @@ export interface ToastItem {
   title: string;
   message?: string;
   durationMs?: number;
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
 }
 
 interface ToastStoreState {

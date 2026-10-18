@@ -3,7 +3,7 @@ pub mod db;
 pub mod models;
 
 #[cfg(not(test))]
-use commands::drafts::{load_drafts, save_drafts};
+use commands::drafts::{get_drafts_metadata, load_drafts, save_drafts};
 #[cfg(not(test))]
 use commands::history::{clear_history, delete_history_item, get_history, record_history_entry};
 #[cfg(not(test))]
@@ -17,6 +17,7 @@ pub fn run() {
             execute_request,
             save_drafts,
             load_drafts,
+            get_drafts_metadata,
             get_history,
             record_history_entry,
             clear_history,

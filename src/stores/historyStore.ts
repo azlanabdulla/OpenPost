@@ -239,6 +239,7 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
   },
 
   deleteEntry: async (id: string) => {
+    const entryToDelete = get().entries.find((e) => e.id === id);
     set((state) => ({
       entries: state.entries.filter((e) => e.id !== id),
     }));
@@ -255,9 +256,26 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
     } catch (err) {
       console.error('Failed to delete history item:', err);
     }
+
+    // Undo notification (OP-SAFE-005)
+    if (entryToDelete) {
+      useToastStore.getState().addToast({
+        type: 'info',
+        title: 'History Entry Deleted',
+        message: `${entryToDelete.method} ${entryToDelete.url}`,
+        durationMs: 6000,
+        action: {
+          label: 'Undo',
+          onClick: async () => {
+            await get().addEntry(entryToDelete);
+          },
+        },
+      });
+    }
   },
 
   clearHistory: async () => {
+    const previousEntries = [...get().entries];
     set({ entries: [] });
     try {
       if (isTauri()) {
@@ -270,6 +288,24 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
       }
     } catch (err) {
       console.error('Failed to clear history:', err);
+    }
+
+    // Undo notification (OP-SAFE-006)
+    if (previousEntries.length > 0) {
+      useToastStore.getState().addToast({
+        type: 'info',
+        title: 'History Cleared',
+        message: `Cleared ${previousEntries.length} history item(s).`,
+        durationMs: 7000,
+        action: {
+          label: 'Undo',
+          onClick: async () => {
+            for (const item of previousEntries) {
+              await get().addEntry(item);
+            }
+          },
+        },
+      });
     }
   },
 

@@ -48,6 +48,18 @@ export const ToastContainer: React.FC = () => {
                   {toast.message}
                 </p>
               )}
+              {toast.action && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    toast.action?.onClick();
+                    removeToast(toast.id);
+                  }}
+                  className="mt-2 px-2.5 py-1 rounded bg-brand-600 hover:bg-brand-500 text-white font-medium text-[11px] shadow-sm transition cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-400"
+                >
+                  {toast.action.label}
+                </button>
+              )}
             </div>
             <button
               type="button"

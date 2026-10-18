@@ -11,6 +11,7 @@ import {
 import { extractParamsFromUrl, syncUrlWithParams, generateId } from '../utils/url';
 import { HttpExecutionError } from '../utils/httpExecutor';
 import { sanitizeRequestForStorage } from '../utils/sanitizer';
+import { useToastStore } from './toastStore';
 
 export interface TabItem {
   id: string;
@@ -24,6 +25,7 @@ export interface TabItem {
 }
 
 const STORAGE_KEY = 'openpost_draft_tabs_v1';
+const STORAGE_BACKUP_KEY = 'openpost_draft_tabs_v1_bak';
 
 function saveDrafts(tabs: TabItem[], activeTabId: string) {
   try {
@@ -36,18 +38,47 @@ function saveDrafts(tabs: TabItem[], activeTabId: string) {
     const jsonStr = JSON.stringify({ tabs: serializable, activeTabId });
 
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(STORAGE_KEY, jsonStr);
+      try {
+        localStorage.setItem(STORAGE_KEY, jsonStr);
+        // Retain rolling backup
+        localStorage.setItem(STORAGE_BACKUP_KEY, jsonStr);
+      } catch (storageErr) {
+        useToastStore.getState().addToast({
+          type: 'error',
+          title: 'Storage Quota Exceeded (OP-SAFE-001)',
+          message: 'Local storage is full or restricted. Tab drafts are currently kept in memory only.',
+          durationMs: 7000,
+        });
+      }
     }
 
     if (typeof window !== 'undefined' && ('__TAURI_INTERNALS__' in window || '__TAURI__' in window)) {
       import('@tauri-apps/api/core')
         .then(({ invoke }) => {
-          invoke('save_drafts', { draftsJson: jsonStr }).catch(() => {});
+          invoke('save_drafts', { draftsJson: jsonStr })
+            .then(async () => {
+              // Update last known disk mtime after successful write
+              try {
+                const mtime = await invoke<number>('get_drafts_metadata');
+                if (mtime > 0) {
+                  useRequestStore.setState({ lastKnownDiskMtime: mtime });
+                }
+              } catch {}
+            })
+            .catch((diskErr) => {
+              console.error('Tauri disk write failure:', diskErr);
+              useToastStore.getState().addToast({
+                type: 'error',
+                title: 'Disk Write Failed (OP-SAFE-002)',
+                message: `Failed to commit drafts to disk: ${diskErr}. In-memory state preserved.`,
+                durationMs: 8000,
+              });
+            });
         })
         .catch(() => {});
     }
-  } catch {
-    // Ignore storage quota or disabled storage
+  } catch (err) {
+    console.error('Failed to serialize drafts:', err);
   }
 }
 
@@ -56,7 +87,37 @@ function loadDrafts(): { tabs: TabItem[]; activeTabId: string } | null {
     if (typeof localStorage === 'undefined') return null;
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw);
+
+    let parsed: any;
+    try {
+      parsed = JSON.parse(raw);
+    } catch (parseErr) {
+      console.warn('Draft file corrupted, attempting recovery from backup...', parseErr);
+      const bakRaw = localStorage.getItem(STORAGE_BACKUP_KEY);
+      if (bakRaw) {
+        try {
+          parsed = JSON.parse(bakRaw);
+          useToastStore.getState().addToast({
+            type: 'warning',
+            title: 'Corrupted Draft Recovered',
+            message: 'Detected corrupted draft file. Restored from previous safe backup.',
+            durationMs: 7000,
+          });
+        } catch {
+          // Backup also corrupted
+        }
+      }
+      if (!parsed) {
+        useToastStore.getState().addToast({
+          type: 'error',
+          title: 'Corrupted Draft Detected',
+          message: 'Saved workspace drafts were corrupted and could not be parsed. Initialized clean workspace.',
+          durationMs: 8000,
+        });
+        return null;
+      }
+    }
+
     if (Array.isArray(parsed.tabs) && parsed.tabs.length > 0) {
       const restoredTabs: TabItem[] = parsed.tabs.map((t: any) => ({
         id: t.id || generateId(),
@@ -131,6 +192,7 @@ interface RequestStoreState {
   tabs: TabItem[];
   activeTabId: string;
   pendingCloseTabId: string | null;
+  lastKnownDiskMtime: number;
 
   // Tab actions
   addTab: (request?: Partial<HttpRequest>) => void;
@@ -164,6 +226,7 @@ export const useRequestStore = create<RequestStoreState>((set, get) => ({
   tabs: storedState ? storedState.tabs : [defaultInitialTab],
   activeTabId: storedState ? storedState.activeTabId : defaultInitialTab.id,
   pendingCloseTabId: null,
+  lastKnownDiskMtime: 0,
 
   addTab: (reqOverrides) => {
     const newTab = createDefaultTab('New Request', reqOverrides);
@@ -201,24 +264,46 @@ export const useRequestStore = create<RequestStoreState>((set, get) => ({
 
   closeTab: (tabId) => {
     const { tabs, activeTabId } = get();
+    const closedTab = tabs.find((t) => t.id === tabId);
+
     if (tabs.length === 1) {
       // Always keep at least one tab
       const freshTab = createDefaultTab('New Request');
       saveDrafts([freshTab], freshTab.id);
       set({ tabs: [freshTab], activeTabId: freshTab.id, pendingCloseTabId: null });
-      return;
+    } else {
+      const filtered = tabs.filter((t) => t.id !== tabId);
+      let nextActiveId = activeTabId;
+      if (activeTabId === tabId) {
+        const idx = tabs.findIndex((t) => t.id === tabId);
+        const nextTab = tabs[idx + 1] || tabs[idx - 1] || filtered[0];
+        nextActiveId = nextTab.id;
+      }
+
+      saveDrafts(filtered, nextActiveId);
+      set({ tabs: filtered, activeTabId: nextActiveId, pendingCloseTabId: null });
     }
 
-    const filtered = tabs.filter((t) => t.id !== tabId);
-    let nextActiveId = activeTabId;
-    if (activeTabId === tabId) {
-      const idx = tabs.findIndex((t) => t.id === tabId);
-      const nextTab = tabs[idx + 1] || tabs[idx - 1] || filtered[0];
-      nextActiveId = nextTab.id;
+    // Undo action notification (OP-SAFE-003)
+    if (closedTab) {
+      useToastStore.getState().addToast({
+        type: 'info',
+        title: 'Tab Closed',
+        message: `"${closedTab.name}" has been closed.`,
+        durationMs: 6000,
+        action: {
+          label: 'Undo',
+          onClick: () => {
+            const currentTabs = get().tabs;
+            if (!currentTabs.some((t) => t.id === closedTab.id)) {
+              const restoredTabs = [...currentTabs, closedTab];
+              saveDrafts(restoredTabs, closedTab.id);
+              set({ tabs: restoredTabs, activeTabId: closedTab.id });
+            }
+          },
+        },
+      });
     }
-
-    saveDrafts(filtered, nextActiveId);
-    set({ tabs: filtered, activeTabId: nextActiveId, pendingCloseTabId: null });
   },
 
   setActiveTab: (tabId) => {
@@ -436,3 +521,52 @@ export const useRequestStore = create<RequestStoreState>((set, get) => ({
     }));
   },
 }));
+
+export async function checkExternalDraftChanges(): Promise<boolean> {
+  if (typeof window !== 'undefined' && ('__TAURI_INTERNALS__' in window || '__TAURI__' in window)) {
+    try {
+      const { invoke } = await import('@tauri-apps/api/core');
+      const mtime = await invoke<number>('get_drafts_metadata');
+      const lastKnown = useRequestStore.getState().lastKnownDiskMtime;
+      if (lastKnown > 0 && mtime > 0 && mtime > lastKnown) {
+        useToastStore.getState().addToast({
+          type: 'warning',
+          title: 'File Changed on Disk (OP-SAFE-004)',
+          message: 'Workspace drafts were modified by an external program.',
+          durationMs: 10000,
+          action: {
+            label: 'Reload from Disk',
+            onClick: async () => {
+              try {
+                const content = await invoke<string>('load_drafts');
+                if (content) {
+                  const parsed = JSON.parse(content.replace(/^RESTORED_FROM_BACKUP:/, ''));
+                  if (Array.isArray(parsed.tabs) && parsed.tabs.length > 0) {
+                    useRequestStore.setState({
+                      tabs: parsed.tabs,
+                      activeTabId: parsed.activeTabId || parsed.tabs[0]?.id,
+                      lastKnownDiskMtime: mtime,
+                    });
+                    useToastStore.getState().addToast({
+                      type: 'success',
+                      title: 'Drafts Reloaded',
+                      message: 'Successfully reloaded updated workspace state from disk.',
+                      durationMs: 4000,
+                    });
+                  }
+                }
+              } catch (reloadErr) {
+                console.error('Failed to reload external draft:', reloadErr);
+              }
+            },
+          },
+        });
+        return true;
+      }
+    } catch {
+      // Ignore if Tauri metadata not available
+    }
+  }
+  return false;
+}
+

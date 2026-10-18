@@ -24,6 +24,7 @@ test_*.ps1
 openpost_drafts.json
 *.corrupt.*
 .xwin-cache/
+rc_wrapper.cmd
 
 # Environment & secrets
 .env
