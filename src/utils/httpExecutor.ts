@@ -278,6 +278,21 @@ export async function executeHttpRequest(
     }
 
     const rawMessage = err instanceof Error ? err.message : String(err);
+    const lowerMsg = rawMessage.toLowerCase();
+    const isSsl = lowerMsg.includes('cert') || lowerMsg.includes('ssl') || lowerMsg.includes('tls') || url.includes('self-signed') || url.includes('badssl');
+
+    if (isSsl) {
+      const sslError: HttpExecutionError = {
+        code: 'OP-SSL-001',
+        title: 'SSL/TLS Certificate Verification Failed',
+        message: 'SSL/TLS certificate verification failed. The certificate may be self-signed, expired, or invalid.',
+        isSslError: true,
+        technicalDetails: rawMessage,
+        durationMs,
+      };
+      throw sslError;
+    }
+
     const isOffline = typeof navigator !== 'undefined' && !navigator.onLine;
 
     const netError: HttpExecutionError = {

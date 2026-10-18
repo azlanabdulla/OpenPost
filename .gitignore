@@ -9,6 +9,8 @@ dist/
 dist-ssr/
 *.local
 *.tsbuildinfo
+windows_build/
+release_assets/
 
 # Tauri / Rust build
 target/

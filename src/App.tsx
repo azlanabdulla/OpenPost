@@ -43,6 +43,11 @@ export const App: React.FC = () => {
 
   const { initTheme } = useThemeStore();
 
+  if (typeof window !== 'undefined' && (import.meta as unknown as { env?: { DEV?: boolean } }).env?.DEV) {
+    (window as unknown as { useHistoryStore: unknown }).useHistoryStore = useHistoryStore;
+    (window as unknown as { useRequestStore: unknown }).useRequestStore = useRequestStore;
+  }
+
   useEffect(() => {
     initTheme();
   }, [initTheme]);
