@@ -1,8 +1,7 @@
-import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Sidebar } from '../src/components/layout/Sidebar';
-import { SettingsModal, DEFAULT_SETTINGS } from '../src/components/modals/SettingsModal';
+import { SettingsModal } from '../src/components/modals/SettingsModal';
 
 describe('Sidebar and Settings Enhancements (Step 1 Items 1, 3, 4)', () => {
   beforeEach(() => {

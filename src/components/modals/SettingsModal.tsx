@@ -174,7 +174,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             onClick={handleSave}
             className={`px-4 py-1.5 rounded-lg text-white font-medium text-xs shadow-sm transition ${
               timeoutError || sizeError
-                ? 'bg-slate-500 opacity-50 cursor-not-allowed'
+                ? 'bg-surface-panel text-surface-muted border border-surface-border opacity-50 cursor-not-allowed'
                 : 'bg-brand-500 hover:bg-brand-600 cursor-pointer'
             }`}
           >

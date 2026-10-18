@@ -75,7 +75,7 @@ export function buildPostmanExport(
     } else if (req.body.type === 'form-urlencoded') {
       bodyObj = {
         mode: 'urlencoded',
-        urlencoded: req.body.formUrlencoded.map((f) => ({
+        urlencoded: (req.body.formUrlencoded || []).map((f) => ({
           key: f.key,
           value: f.value,
           description: f.description || '',

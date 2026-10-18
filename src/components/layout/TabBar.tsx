@@ -11,7 +11,7 @@ const METHOD_COLOR_MAP: Record<HttpMethod, string> = {
   PUT: 'text-blue-400',
   PATCH: 'text-purple-400',
   DELETE: 'text-rose-400',
-  HEAD: 'text-slate-400',
+  HEAD: 'text-surface-muted',
   OPTIONS: 'text-cyan-400',
 };
 
@@ -49,7 +49,7 @@ export const TabBar: React.FC = () => {
         <div className="flex items-center gap-1 py-1">
           {tabs.map((tab: TabItem) => {
             const isActive = tab.id === activeTabId;
-            const methodColor = METHOD_COLOR_MAP[tab.request.method] || 'text-slate-400';
+            const methodColor = METHOD_COLOR_MAP[tab.request.method] || 'text-surface-muted';
 
             return (
               <div
@@ -66,8 +66,8 @@ export const TabBar: React.FC = () => {
                 }}
                 className={`group flex items-center gap-2 px-3 py-1.5 rounded-t-md text-xs font-medium cursor-pointer border-t-2 transition-all max-w-[200px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
                   isActive
-                    ? 'bg-surface-card text-slate-100 border-brand-500 shadow-sm'
-                    : 'bg-surface-panel/40 text-surface-muted hover:text-slate-300 hover:bg-surface-panel/70 border-transparent'
+                    ? 'bg-surface-card text-surface-text border-brand-500 shadow-sm'
+                    : 'bg-surface-panel/40 text-surface-muted hover:text-surface-text hover:bg-surface-panel/70 border-transparent'
                 }`}
               >
                 {/* Method badge */}
@@ -82,7 +82,7 @@ export const TabBar: React.FC = () => {
 
                 {tab.isDirty && (
                   <span
-                    className="w-1.5 h-1.5 rounded-full bg-amber-400 group-hover:hidden"
+                    className="w-1.5 h-1.5 rounded-full bg-amber-500 group-hover:hidden"
                     title="Unsaved changes"
                   />
                 )}
@@ -95,7 +95,7 @@ export const TabBar: React.FC = () => {
                     e.stopPropagation();
                     requestCloseTab(tab.id);
                   }}
-                  className={`p-0.5 rounded hover:bg-surface-border text-slate-400 hover:text-slate-200 transition cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-500 ${
+                  className={`p-0.5 rounded hover:bg-surface-border text-surface-muted hover:text-surface-text transition cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-500 ${
                     tab.isDirty ? 'hidden group-hover:block' : ''
                   }`}
                   title="Close Tab"
@@ -111,7 +111,7 @@ export const TabBar: React.FC = () => {
             type="button"
             aria-label="Create new request tab"
             onClick={() => addTab()}
-            className="p-1.5 rounded text-surface-muted hover:text-slate-200 hover:bg-surface-panel transition cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-500"
+            className="p-1.5 rounded text-surface-muted hover:text-surface-text hover:bg-surface-panel transition cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-500"
             title="New Request Tab (Ctrl+T)"
           >
             <Plus className="w-4 h-4" />
@@ -130,7 +130,7 @@ export const TabBar: React.FC = () => {
             <button
               type="button"
               onClick={cancelCloseTab}
-              className="px-3 py-1.5 rounded-lg border border-surface-border hover:bg-surface-panel text-slate-300 text-xs transition cursor-pointer"
+              className="px-3 py-1.5 rounded-lg border border-surface-border hover:bg-surface-panel text-surface-text text-xs transition cursor-pointer"
             >
               Cancel
             </button>
@@ -138,7 +138,7 @@ export const TabBar: React.FC = () => {
               <button
                 type="button"
                 onClick={confirmCloseTab}
-                className="px-3 py-1.5 rounded-lg bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/30 text-rose-300 font-medium text-xs shadow-sm transition cursor-pointer"
+                className="px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-600 dark:text-rose-400 font-medium text-xs shadow-sm transition cursor-pointer"
               >
                 Don't Save
               </button>
@@ -154,13 +154,13 @@ export const TabBar: React.FC = () => {
         }
       >
         <div className="flex items-start gap-3 py-2">
-          <div className="p-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 shrink-0">
+          <div className="p-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 shrink-0">
             <AlertTriangle className="w-5 h-5" />
           </div>
-          <div className="text-xs text-slate-300 space-y-1">
+          <div className="text-xs text-surface-text space-y-1">
             <p>
               Are you sure you want to close{' '}
-              <strong className="text-slate-100">{pendingTab?.name || 'this request'}</strong>?
+              <strong className="text-surface-text">{pendingTab?.name || 'this request'}</strong>?
             </p>
             <p className="text-surface-muted">
               Any unsaved changes made to the URL, parameters, headers, or body will be discarded.

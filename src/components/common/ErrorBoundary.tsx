@@ -59,20 +59,20 @@ export class ErrorBoundary extends Component<Props, State> {
       const msg = APP_MESSAGES.SYS_CRASH;
 
       return (
-        <div className="min-h-screen w-screen bg-[#0B0F17] text-slate-100 flex flex-col items-center justify-center p-6 select-text">
-          <div className="max-w-xl w-full bg-[#111827] border border-red-500/30 rounded-2xl p-8 shadow-2xl shadow-red-950/30 text-center">
-            <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center mx-auto mb-5">
+        <div className="min-h-screen w-screen bg-surface-base text-surface-text flex flex-col items-center justify-center p-6 select-text">
+          <div className="max-w-xl w-full bg-surface-card border border-red-500/30 rounded-2xl p-8 shadow-2xl text-center">
+            <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center mx-auto mb-5">
               <AlertOctagon className="w-8 h-8" />
             </div>
 
-            <span className="text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-red-500/20 text-red-300 border border-red-500/40">
+            <span className="text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/30">
               {msg.code}
             </span>
 
-            <h1 className="text-xl font-bold text-slate-100 mt-3 mb-2">{msg.title}</h1>
-            <p className="text-sm text-slate-400 mb-6">{msg.message}</p>
+            <h1 className="text-xl font-bold text-surface-text mt-3 mb-2">{msg.title}</h1>
+            <p className="text-sm text-surface-muted mb-6">{msg.message}</p>
 
-            <div className="bg-[#151D2E] border border-surface-border rounded-xl p-4 text-left mb-6 font-mono text-xs overflow-x-auto text-red-300 max-h-36">
+            <div className="bg-surface-panel border border-surface-border rounded-xl p-4 text-left mb-6 font-mono text-xs overflow-x-auto text-red-600 dark:text-red-400 max-h-36">
               <strong>{this.state.error.name}:</strong> {this.state.error.message}
             </div>
 
@@ -89,11 +89,11 @@ export class ErrorBoundary extends Component<Props, State> {
               <button
                 type="button"
                 onClick={this.handleCopyDiagnostics}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#1F293D] hover:bg-slate-700 text-slate-200 font-medium text-xs transition cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-panel hover:bg-surface-hover text-surface-text font-medium text-xs border border-surface-border transition cursor-pointer"
               >
                 {this.state.copied ? (
                   <>
-                    <Check className="w-4 h-4 text-emerald-400" />
+                    <Check className="w-4 h-4 text-emerald-500" />
                     Copied Diagnostics
                   </>
                 ) : (
@@ -108,7 +108,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 href="https://github.com/openpost/openpost/issues/new"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg border border-surface-border hover:bg-surface-panel text-slate-400 hover:text-slate-200 text-xs transition"
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg border border-surface-border hover:bg-surface-panel text-surface-muted hover:text-surface-text text-xs transition"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
                 Report on GitHub

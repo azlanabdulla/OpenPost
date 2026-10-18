@@ -43,60 +43,60 @@ export const WelcomeModal: React.FC = () => {
         </button>
       }
     >
-      <div className="py-2 space-y-3.5 text-xs text-slate-300">
+      <div className="py-2 space-y-3.5 text-xs text-surface-text">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div className="p-2.5 rounded-lg bg-surface-panel/40 border border-surface-border flex items-start gap-2.5">
-            <div className="p-1.5 rounded-md bg-emerald-500/10 text-emerald-400 shrink-0">
+            <div className="p-1.5 rounded-md bg-emerald-500/10 text-emerald-500 shrink-0">
               <ShieldCheck className="w-4 h-4" />
             </div>
             <div>
-              <p className="font-semibold text-slate-200">100% Local-First</p>
-              <p className="text-[11px] text-slate-400 mt-0.5">
+              <p className="font-semibold text-surface-text">100% Local-First</p>
+              <p className="text-[11px] text-surface-muted mt-0.5">
                 No cloud account, no login required, zero telemetry, and zero tracking.
               </p>
             </div>
           </div>
 
           <div className="p-2.5 rounded-lg bg-surface-panel/40 border border-surface-border flex items-start gap-2.5">
-            <div className="p-1.5 rounded-md bg-cyan-500/10 text-cyan-400 shrink-0">
+            <div className="p-1.5 rounded-md bg-cyan-500/10 text-cyan-500 shrink-0">
               <Zap className="w-4 h-4" />
             </div>
             <div>
-              <p className="font-semibold text-slate-200">No Artificial Limits</p>
-              <p className="text-[11px] text-slate-400 mt-0.5">
+              <p className="font-semibold text-surface-text">No Artificial Limits</p>
+              <p className="text-[11px] text-surface-muted mt-0.5">
                 Unlimited collections, requests, and environments. No paywalls.
               </p>
             </div>
           </div>
 
           <div className="p-2.5 rounded-lg bg-surface-panel/40 border border-surface-border flex items-start gap-2.5">
-            <div className="p-1.5 rounded-md bg-brand-500/10 text-brand-300 shrink-0">
+            <div className="p-1.5 rounded-md bg-brand-500/10 text-brand-primary shrink-0">
               <FolderGit2 className="w-4 h-4" />
             </div>
             <div>
-              <p className="font-semibold text-slate-200">Git-Friendly JSON</p>
-              <p className="text-[11px] text-slate-400 mt-0.5">
+              <p className="font-semibold text-surface-text">Git-Friendly JSON</p>
+              <p className="text-[11px] text-surface-muted mt-0.5">
                 Saved in human-readable files that you can version-control with git.
               </p>
             </div>
           </div>
 
           <div className="p-2.5 rounded-lg bg-surface-panel/40 border border-surface-border flex items-start gap-2.5">
-            <div className="p-1.5 rounded-md bg-amber-500/10 text-amber-400 shrink-0">
+            <div className="p-1.5 rounded-md bg-amber-500/10 text-amber-500 shrink-0">
               <HardDrive className="w-4 h-4" />
             </div>
             <div>
-              <p className="font-semibold text-slate-200">Desktop Security</p>
-              <p className="text-[11px] text-slate-400 mt-0.5">
+              <p className="font-semibold text-surface-text">Desktop Security</p>
+              <p className="text-[11px] text-surface-muted mt-0.5">
                 High-performance Rust network engine bypassing CORS restrictions.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="rounded-lg bg-slate-900/60 p-2.5 border border-surface-border font-mono text-[11px] text-slate-400 flex items-center justify-between">
+        <div className="rounded-lg bg-surface-panel p-2.5 border border-surface-border font-mono text-[11px] text-surface-muted flex items-center justify-between">
           <span>Storage: Local Workspace (~/.openpost)</span>
-          <span className="flex items-center gap-1 text-emerald-400 text-[10px]">
+          <span className="flex items-center gap-1 text-emerald-500 text-[10px]">
             <Check className="w-3 h-3" /> Ready
           </span>
         </div>

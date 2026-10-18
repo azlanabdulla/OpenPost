@@ -92,12 +92,12 @@ export const Modal: React.FC<ModalProps> = ({
         aria-labelledby="modal-title"
         aria-describedby={description ? 'modal-description' : undefined}
         onClick={(e) => e.stopPropagation()}
-        className={`w-full ${maxWidth} bg-[#111827] border border-surface-border rounded-xl shadow-2xl overflow-hidden select-text`}
+        className={`w-full ${maxWidth} bg-surface-card border border-surface-border rounded-xl shadow-2xl overflow-hidden select-text text-surface-text`}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-surface-border/70">
           <div>
-            <h3 id="modal-title" className="text-sm font-semibold text-slate-100">
+            <h3 id="modal-title" className="text-sm font-semibold text-surface-text">
               {title}
             </h3>
             {description && (
@@ -110,18 +110,18 @@ export const Modal: React.FC<ModalProps> = ({
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="p-1 rounded-md text-surface-muted hover:text-slate-200 hover:bg-surface-panel transition cursor-pointer"
+            className="p-1 rounded-md text-surface-muted hover:text-surface-text hover:bg-surface-panel transition cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-4 text-xs text-slate-300">{children}</div>
+        <div className="p-4 text-xs text-surface-text">{children}</div>
 
         {/* Footer */}
         {footer && (
-          <div className="flex items-center justify-end gap-2 p-3 bg-surface-panel/30 border-t border-surface-border/70">
+          <div className="flex items-center justify-end gap-2 p-3 bg-surface-panel/40 border-t border-surface-border/70">
             {footer}
           </div>
         )}

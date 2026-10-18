@@ -53,17 +53,17 @@ export const HeadersEditor: React.FC<HeadersEditorProps> = ({ headers, onChange 
   return (
     <div className="flex flex-col h-full p-3 gap-2">
       <div className="flex justify-between items-center text-xs text-surface-muted px-1 flex-wrap gap-2">
-        <span className="font-medium text-slate-300">Request Headers</span>
+        <span className="font-medium text-surface-text">Request Headers</span>
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-[11px] text-slate-500 flex items-center gap-1">
-            <Sparkles className="w-3 h-3 text-cyan-400" /> Presets:
+          <span className="text-[11px] text-surface-muted flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-brand-primary" /> Presets:
           </span>
           {COMMON_HEADERS.map((ch) => (
             <button
               key={ch.key}
               type="button"
               onClick={() => addCommonHeader(ch.key, ch.value)}
-              className="text-[11px] px-2 py-0.5 rounded bg-surface-panel hover:bg-surface-hover border border-surface-border text-slate-300 hover:text-brand-300 transition"
+              className="text-[11px] px-2 py-0.5 rounded bg-surface-panel hover:bg-surface-hover border border-surface-border text-surface-muted hover:text-surface-text transition cursor-pointer"
             >
               +{ch.key}
             </button>

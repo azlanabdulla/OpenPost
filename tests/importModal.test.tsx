@@ -1,4 +1,3 @@
-import React from 'react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ImportModal } from '../src/components/modals/ImportModal';
@@ -8,7 +7,7 @@ describe('ImportModal Unit & Integration Tests (OP-R2-014, OP-R2-015)', () => {
   beforeEach(() => {
     useRequestStore.setState({
       tabs: [],
-      activeTabId: null,
+      activeTabId: undefined,
     });
   });
 

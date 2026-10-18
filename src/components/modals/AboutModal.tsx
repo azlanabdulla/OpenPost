@@ -33,54 +33,54 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
       description="The Free, Open-Source Postman Alternative"
       footer={
         <div className="flex items-center justify-between w-full">
-          <span className="text-[11px] text-slate-500 flex items-center gap-1">
+          <span className="text-[11px] text-surface-muted flex items-center gap-1">
             Built with <Heart className="w-3 h-3 text-rose-500 fill-rose-500 inline" /> for developers
           </span>
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-1.5 rounded-lg bg-surface-panel hover:bg-surface-border text-slate-200 text-xs transition cursor-pointer"
+            className="px-4 py-1.5 rounded-lg bg-surface-panel hover:bg-surface-border text-surface-text text-xs transition cursor-pointer"
           >
             Close
           </button>
         </div>
       }
     >
-      <div className="py-2 space-y-4 text-xs text-slate-300">
+      <div className="py-2 space-y-4 text-xs text-surface-text">
         <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-panel/40 border border-surface-border">
           <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-500 to-cyan-500 flex items-center justify-center font-bold text-white text-base shadow-md">
             OP
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-slate-100 flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-surface-text flex items-center gap-2">
               OpenPost Desktop
-              <span className="text-[10px] bg-brand-500/20 text-brand-300 px-1.5 py-0.5 rounded font-mono">
+              <span className="text-[10px] bg-brand-500/20 text-brand-primary px-1.5 py-0.5 rounded font-mono">
                 v0.1.0
               </span>
             </h3>
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[11px] text-surface-muted">
               MIT Licensed • Local-First Architecture • Zero Telemetry
             </p>
           </div>
         </div>
 
-        <div className="space-y-2 text-slate-300">
+        <div className="space-y-2 text-surface-text">
           <p>
             OpenPost is built as a transparent, high-performance API client without user accounts, cloud dependencies, or usage limits. Your requests, environments, and secrets stay strictly on your local computer.
           </p>
         </div>
 
-        <div className="p-2.5 rounded-lg bg-slate-900/50 border border-surface-border space-y-1.5">
+        <div className="p-2.5 rounded-lg bg-surface-panel border border-surface-border space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="font-semibold text-slate-200 text-xs">Security & Diagnostics</span>
+            <span className="font-semibold text-surface-text text-xs">Security & Diagnostics</span>
             <button
               type="button"
               onClick={handleCopyDiagnostics}
-              className="flex items-center gap-1 px-2 py-0.5 rounded bg-surface-panel hover:bg-surface-border text-slate-300 text-[11px] transition cursor-pointer"
+              className="flex items-center gap-1 px-2 py-0.5 rounded bg-surface-base hover:bg-surface-hover text-surface-text text-[11px] transition cursor-pointer"
             >
               {copiedDiagnostics ? (
                 <>
-                  <Check className="w-3 h-3 text-emerald-400" />
+                  <Check className="w-3 h-3 text-emerald-500" />
                   <span>Copied!</span>
                 </>
               ) : (
@@ -91,17 +91,17 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
               )}
             </button>
           </div>
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] text-surface-muted">
             Export sanitized environment information for bug reports. All headers, tokens, and authorization parameters are automatically redacted.
           </p>
         </div>
 
-        <div className="pt-1 flex items-center gap-4 text-slate-400">
+        <div className="pt-1 flex items-center gap-4 text-surface-muted">
           <a
             href="https://github.com/openpost/openpost"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 hover:text-slate-200 transition"
+            className="flex items-center gap-1.5 hover:text-surface-text transition"
           >
             <Github className="w-4 h-4" />
             <span>GitHub Repository</span>
@@ -111,9 +111,9 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
             href="https://github.com/openpost/openpost/blob/main/LICENSE"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 hover:text-slate-200 transition"
+            className="flex items-center gap-1.5 hover:text-surface-text transition"
           >
-            <Shield className="w-4 h-4 text-emerald-400" />
+            <Shield className="w-4 h-4 text-emerald-500" />
             <span>MIT License</span>
           </a>
         </div>

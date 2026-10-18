@@ -18,7 +18,7 @@ const HTTP_METHODS: Array<{ method: HttpMethod; color: string; label: string }> 
   { method: 'PUT', color: 'text-blue-400 font-bold', label: 'PUT' },
   { method: 'PATCH', color: 'text-purple-400 font-bold', label: 'PATCH' },
   { method: 'DELETE', color: 'text-rose-400 font-bold', label: 'DEL' },
-  { method: 'HEAD', color: 'text-slate-400 font-bold', label: 'HEAD' },
+  { method: 'HEAD', color: 'text-surface-muted font-bold', label: 'HEAD' },
   { method: 'OPTIONS', color: 'text-cyan-400 font-bold', label: 'OPT' },
 ];
 
@@ -70,12 +70,12 @@ export const UrlBar: React.FC<UrlBarProps> = ({
           className={`appearance-none bg-surface-panel hover:bg-surface-hover text-xs font-mono font-bold py-2.5 pl-3.5 pr-8 rounded-lg border border-surface-border cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all ${activeMethodConfig.color}`}
         >
           {HTTP_METHODS.map((m) => (
-            <option key={m.method} value={m.method} className="bg-surface-card text-slate-100 font-mono">
+            <option key={m.method} value={m.method} className="bg-surface-card text-surface-text font-mono">
               {m.method}
             </option>
           ))}
         </select>
-        <ChevronDown className="w-3.5 h-3.5 text-surface-muted absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none group-hover:text-slate-200 transition-colors" />
+        <ChevronDown className="w-3.5 h-3.5 text-surface-muted absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none group-hover:text-surface-text transition-colors" />
       </div>
 
       {/* URL Input */}
@@ -92,7 +92,7 @@ export const UrlBar: React.FC<UrlBarProps> = ({
               onSend();
             }
           }}
-          className={`w-full bg-surface-panel hover:bg-surface-hover/80 focus:bg-surface-panel text-slate-100 font-mono text-sm py-2 px-3.5 rounded-lg border transition-all placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 ${
+          className={`w-full bg-surface-panel hover:bg-surface-hover/80 focus:bg-surface-panel text-surface-text font-mono text-sm py-2 px-3.5 rounded-lg border transition-all placeholder:text-surface-muted focus:outline-none focus:ring-2 focus:ring-brand-500 ${
             isUrlEmpty
               ? 'border-surface-border'
               : hasMissingProtocol
@@ -141,10 +141,10 @@ export const UrlBar: React.FC<UrlBarProps> = ({
           onClick={onSend}
           disabled={isUrlEmpty}
           aria-label="Send Request"
-          className={`flex items-center gap-2 px-5 py-2 text-white rounded-lg text-xs font-semibold shadow-md transition-all group focus-visible:ring-2 focus-visible:ring-brand-400 ${
+          className={`flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-semibold shadow-md transition-all group focus-visible:ring-2 focus-visible:ring-brand-400 ${
             isUrlEmpty
-              ? 'bg-slate-700/60 text-slate-400 cursor-not-allowed opacity-60'
-              : 'bg-brand-600 hover:bg-brand-500 active:scale-[0.98] shadow-brand-500/10 cursor-pointer'
+              ? 'bg-surface-panel text-surface-muted border border-surface-border cursor-not-allowed opacity-60'
+              : 'bg-brand-600 hover:bg-brand-500 text-white active:scale-[0.98] shadow-brand-500/10 cursor-pointer'
           }`}
           title={isUrlEmpty ? 'Please enter a URL to send a request (OP-URL-002)' : 'Send Request (Ctrl + Enter)'}
         >

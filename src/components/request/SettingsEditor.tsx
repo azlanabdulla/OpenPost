@@ -15,7 +15,7 @@ export const SettingsEditor: React.FC<SettingsEditorProps> = ({ settings = {}, o
   return (
     <div className="flex flex-col h-full p-4 max-w-xl space-y-5">
       <div>
-        <h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">
+        <h4 className="text-xs font-semibold text-surface-text uppercase tracking-wider mb-1">
           Request Configuration
         </h4>
         <p className="text-[11px] text-surface-muted">
@@ -25,7 +25,7 @@ export const SettingsEditor: React.FC<SettingsEditorProps> = ({ settings = {}, o
 
       {/* Timeout */}
       <div className="space-y-1.5">
-        <label className="block text-xs font-medium text-slate-300">
+        <label className="block text-xs font-medium text-surface-text">
           Request Timeout (milliseconds)
         </label>
         <div className="flex items-center gap-2">
@@ -36,7 +36,7 @@ export const SettingsEditor: React.FC<SettingsEditorProps> = ({ settings = {}, o
             max={300000}
             value={timeoutMs}
             onChange={(e) => onChange({ timeoutMs: Number(e.target.value) || 30000 })}
-            className="w-48 bg-surface-panel text-slate-200 font-mono text-xs py-2 px-3 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none"
+            className="w-48 bg-surface-panel text-surface-text font-mono text-xs py-2 px-3 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
           />
           <span className="text-xs text-surface-muted">({(timeoutMs / 1000).toFixed(1)}s)</span>
         </div>
@@ -47,12 +47,12 @@ export const SettingsEditor: React.FC<SettingsEditorProps> = ({ settings = {}, o
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {verifySsl ? (
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <ShieldCheck className="w-4 h-4 text-emerald-500" />
             ) : (
-              <AlertTriangle className="w-4 h-4 text-amber-400" />
+              <AlertTriangle className="w-4 h-4 text-amber-500" />
             )}
             <div>
-              <span className="text-xs font-medium text-slate-200">SSL Certificate Verification</span>
+              <span className="text-xs font-medium text-surface-text">SSL Certificate Verification</span>
               <p className="text-[11px] text-surface-muted">
                 Validate SSL/TLS certificates when executing HTTPS requests
               </p>
@@ -62,7 +62,7 @@ export const SettingsEditor: React.FC<SettingsEditorProps> = ({ settings = {}, o
             type="button"
             onClick={() => onChange({ verifySsl: !verifySsl })}
             className={`w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
-              verifySsl ? 'bg-brand-600' : 'bg-slate-700'
+              verifySsl ? 'bg-brand-500' : 'bg-surface-panel border border-surface-border'
             }`}
           >
             <div
@@ -74,8 +74,8 @@ export const SettingsEditor: React.FC<SettingsEditorProps> = ({ settings = {}, o
         </div>
 
         {!verifySsl && (
-          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs">
-            <AlertTriangle className="w-4 h-4 flex-shrink-0 text-amber-400" />
+          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-500 text-xs">
+            <AlertTriangle className="w-4 h-4 flex-shrink-0 text-amber-500" />
             <span>
               <strong>Warning:</strong> SSL certificate verification is disabled for this request. Insecure certificates will be accepted.
             </span>
@@ -86,7 +86,7 @@ export const SettingsEditor: React.FC<SettingsEditorProps> = ({ settings = {}, o
       {/* Follow Redirects */}
       <div className="pt-2 border-t border-surface-border flex items-center justify-between">
         <div>
-          <span className="text-xs font-medium text-slate-200">Follow HTTP Redirects</span>
+          <span className="text-xs font-medium text-surface-text">Follow HTTP Redirects</span>
           <p className="text-[11px] text-surface-muted">
             Automatically follow 3xx redirect responses
           </p>
@@ -95,7 +95,7 @@ export const SettingsEditor: React.FC<SettingsEditorProps> = ({ settings = {}, o
           type="button"
           onClick={() => onChange({ followRedirects: !followRedirects })}
           className={`w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
-            followRedirects ? 'bg-brand-600' : 'bg-slate-700'
+            followRedirects ? 'bg-brand-500' : 'bg-surface-panel border border-surface-border'
           }`}
         >
           <div

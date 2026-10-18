@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FolderTree, History, Globe2, Settings, Plus, Search, ChevronRight, Upload } from 'lucide-react';
+import { FolderTree, History, Globe2, Plus, Search, ChevronRight, Upload } from 'lucide-react';
 import { useRequestStore } from '../../stores/requestStore';
 import { useHistoryStore } from '../../stores/historyStore';
 import { HistoryPanel } from '../history/HistoryPanel';

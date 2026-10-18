@@ -69,7 +69,7 @@ export const SplitPane: React.FC<SplitPaneProps> = ({
         className="h-1.5 w-full bg-surface-border hover:bg-brand-500/80 cursor-row-resize transition-colors flex items-center justify-center group select-none z-10"
         title="Drag to resize split panes"
       >
-        <div className="w-8 h-0.5 rounded-full bg-slate-600 group-hover:bg-white transition-colors" />
+        <div className="w-8 h-0.5 rounded-full bg-surface-muted group-hover:bg-brand-primary transition-colors" />
       </div>
 
       {/* Bottom Pane */}

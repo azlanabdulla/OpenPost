@@ -11,8 +11,8 @@ export const ParamsEditor: React.FC<ParamsEditorProps> = ({ params, onChange }) 
   return (
     <div className="flex flex-col h-full p-3 gap-2">
       <div className="flex justify-between items-center text-xs text-surface-muted px-1">
-        <span className="font-medium text-slate-300">Query Parameters</span>
-        <span className="text-[11px] text-slate-500">
+        <span className="font-medium text-surface-text">Query Parameters</span>
+        <span className="text-[11px] text-surface-muted">
           Parameters stay in sync with the URL query string
         </span>
       </div>

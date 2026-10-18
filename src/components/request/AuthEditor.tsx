@@ -7,11 +7,11 @@ interface AuthEditorProps {
   onChange: (auth: AuthConfig) => void;
 }
 
-const AUTH_TYPES: Array<{ type: AuthType; label: string; desc: string }> = [
-  { type: 'none', label: 'No Auth', desc: 'No authentication credentials sent' },
-  { type: 'bearer', label: 'Bearer Token', desc: 'Token added to Authorization: Bearer <token>' },
-  { type: 'basic', label: 'Basic Auth', desc: 'Base64 encoded username & password' },
-  { type: 'apikey', label: 'API Key', desc: 'Key-value pair sent in Header or Query' },
+const AUTH_TYPES: { type: AuthType; label: string; desc: string }[] = [
+  { type: 'none', label: 'No Auth', desc: 'Default, public requests' },
+  { type: 'bearer', label: 'Bearer Token', desc: 'JWT or API token in header' },
+  { type: 'basic', label: 'Basic Auth', desc: 'Username and password credentials' },
+  { type: 'apikey', label: 'API Key', desc: 'Custom header or query parameter' },
 ];
 
 export const AuthEditor: React.FC<AuthEditorProps> = ({ auth, onChange }) => {
@@ -21,9 +21,6 @@ export const AuthEditor: React.FC<AuthEditorProps> = ({ auth, onChange }) => {
     onChange({
       ...auth,
       type,
-      bearer: auth.bearer || { token: '' },
-      basic: auth.basic || { username: '', password: '' },
-      apiKey: auth.apiKey || { key: 'X-API-Key', value: '', addTo: 'header' },
     });
   };
 
@@ -39,14 +36,14 @@ export const AuthEditor: React.FC<AuthEditorProps> = ({ auth, onChange }) => {
             key={at.type}
             type="button"
             onClick={() => handleTypeChange(at.type)}
-            className={`flex flex-col text-left px-3 py-2 rounded-lg text-xs transition-all ${
+            className={`flex flex-col text-left px-3 py-2 rounded-lg text-xs transition-all cursor-pointer ${
               auth.type === at.type
-                ? 'bg-brand-500/20 text-brand-300 border border-brand-500/40 font-medium'
-                : 'text-slate-300 hover:bg-surface-panel border border-transparent'
+                ? 'bg-brand-500/10 text-brand-primary border border-brand-500/30 font-medium'
+                : 'text-surface-text hover:bg-surface-panel border border-transparent'
             }`}
           >
             <span>{at.label}</span>
-            <span className="text-[10px] text-slate-500 mt-0.5 leading-tight">{at.desc}</span>
+            <span className="text-[10px] text-surface-muted mt-0.5 leading-tight">{at.desc}</span>
           </button>
         ))}
       </div>
@@ -55,18 +52,18 @@ export const AuthEditor: React.FC<AuthEditorProps> = ({ auth, onChange }) => {
       <div className="flex-1 min-h-[220px]">
         {auth.type === 'none' && (
           <div className="flex flex-col items-center justify-center h-full text-center text-surface-muted py-12">
-            <Shield className="w-8 h-8 text-slate-600 mb-2" />
-            <p className="text-sm font-medium text-slate-400">No Authentication Configured</p>
-            <p className="text-xs text-slate-500 mt-1">This request will not carry any credentials</p>
+            <Shield className="w-8 h-8 text-surface-muted mb-2" />
+            <p className="text-sm font-medium text-surface-text">No Authentication Configured</p>
+            <p className="text-xs text-surface-muted mt-1">This request will not carry any credentials</p>
           </div>
         )}
 
         {auth.type === 'bearer' && (
           <div className="max-w-xl space-y-4 pt-2">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center justify-between">
+              <label className="block text-xs font-medium text-surface-text mb-1.5 flex items-center justify-between">
                 <span>Bearer Token</span>
-                <span className="text-[11px] text-slate-500">Supports variable substitution like {`{{token}}`}</span>
+                <span className="text-[11px] text-surface-muted">Supports variable substitution like {`{{token}}`}</span>
               </label>
               <div className="relative">
                 <input
@@ -79,12 +76,12 @@ export const AuthEditor: React.FC<AuthEditorProps> = ({ auth, onChange }) => {
                       bearer: { token: e.target.value },
                     })
                   }
-                  className="w-full bg-surface-panel text-slate-200 font-mono text-xs py-2 pl-3 pr-10 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none"
+                  className="w-full bg-surface-panel text-surface-text placeholder:text-surface-muted font-mono text-xs py-2 pl-3 pr-10 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
                 />
                 <button
                   type="button"
                   onClick={() => setShowSecret(!showSecret)}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-surface-muted hover:text-surface-text cursor-pointer p-1"
                   title={showSecret ? 'Hide token' : 'Show token'}
                 >
                   {showSecret ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -97,7 +94,7 @@ export const AuthEditor: React.FC<AuthEditorProps> = ({ auth, onChange }) => {
         {auth.type === 'basic' && (
           <div className="max-w-xl space-y-4 pt-2">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Username</label>
+              <label className="block text-xs font-medium text-surface-text mb-1.5">Username</label>
               <input
                 type="text"
                 value={auth.basic?.username || ''}
@@ -111,11 +108,11 @@ export const AuthEditor: React.FC<AuthEditorProps> = ({ auth, onChange }) => {
                     },
                   })
                 }
-                className="w-full bg-surface-panel text-slate-200 font-mono text-xs py-2 px-3 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none"
+                className="w-full bg-surface-panel text-surface-text placeholder:text-surface-muted font-mono text-xs py-2 px-3 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Password</label>
+              <label className="block text-xs font-medium text-surface-text mb-1.5">Password</label>
               <div className="relative">
                 <input
                   type={showSecret ? 'text' : 'password'}
@@ -130,12 +127,12 @@ export const AuthEditor: React.FC<AuthEditorProps> = ({ auth, onChange }) => {
                       },
                     })
                   }
-                  className="w-full bg-surface-panel text-slate-200 font-mono text-xs py-2 pl-3 pr-10 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none"
+                  className="w-full bg-surface-panel text-surface-text placeholder:text-surface-muted font-mono text-xs py-2 pl-3 pr-10 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
                 />
                 <button
                   type="button"
                   onClick={() => setShowSecret(!showSecret)}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-surface-muted hover:text-surface-text cursor-pointer p-1"
                   title={showSecret ? 'Hide password' : 'Show password'}
                 >
                   {showSecret ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -149,7 +146,7 @@ export const AuthEditor: React.FC<AuthEditorProps> = ({ auth, onChange }) => {
           <div className="max-w-xl space-y-4 pt-2">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">Key</label>
+                <label className="block text-xs font-medium text-surface-text mb-1.5">Key</label>
                 <input
                   type="text"
                   value={auth.apiKey?.key || ''}
@@ -164,11 +161,11 @@ export const AuthEditor: React.FC<AuthEditorProps> = ({ auth, onChange }) => {
                       },
                     })
                   }
-                  className="w-full bg-surface-panel text-slate-200 font-mono text-xs py-2 px-3 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none"
+                  className="w-full bg-surface-panel text-surface-text placeholder:text-surface-muted font-mono text-xs py-2 px-3 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">Add To</label>
+                <label className="block text-xs font-medium text-surface-text mb-1.5">Add To</label>
                 <select
                   value={auth.apiKey?.addTo || 'header'}
                   onChange={(e) =>
@@ -181,7 +178,7 @@ export const AuthEditor: React.FC<AuthEditorProps> = ({ auth, onChange }) => {
                       },
                     })
                   }
-                  className="w-full bg-surface-panel text-slate-200 text-xs py-2 px-3 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none"
+                  className="w-full bg-surface-panel text-surface-text text-xs py-2 px-3 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 cursor-pointer"
                 >
                   <option value="header">Header</option>
                   <option value="query">Query Params</option>
@@ -189,7 +186,7 @@ export const AuthEditor: React.FC<AuthEditorProps> = ({ auth, onChange }) => {
               </div>
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Value</label>
+              <label className="block text-xs font-medium text-surface-text mb-1.5">Value</label>
               <div className="relative">
                 <input
                   type={showSecret ? 'text' : 'password'}
@@ -205,12 +202,12 @@ export const AuthEditor: React.FC<AuthEditorProps> = ({ auth, onChange }) => {
                       },
                     })
                   }
-                  className="w-full bg-surface-panel text-slate-200 font-mono text-xs py-2 pl-3 pr-10 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none"
+                  className="w-full bg-surface-panel text-surface-text placeholder:text-surface-muted font-mono text-xs py-2 pl-3 pr-10 rounded-lg border border-surface-border focus:border-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
                 />
                 <button
                   type="button"
                   onClick={() => setShowSecret(!showSecret)}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-surface-muted hover:text-surface-text cursor-pointer p-1"
                   title={showSecret ? 'Hide value' : 'Show value'}
                 >
                   {showSecret ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}

@@ -146,7 +146,7 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
     return (
       <div className="flex flex-col items-center justify-center h-full bg-surface-card p-6 text-center select-none">
         <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin mb-3" />
-        <p className="text-xs font-medium text-slate-300">Sending request...</p>
+        <p className="text-xs font-medium text-surface-text">Sending request...</p>
         <p className="text-[11px] text-surface-muted mt-1">Connecting to server and streaming response</p>
       </div>
     );
@@ -156,21 +156,21 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
   if (error && isHttpExecutionError(error) && error.isCancelled) {
     return (
       <div className="flex flex-col items-center justify-center h-full bg-surface-card p-6 text-center select-none">
-        <div className="p-3 bg-slate-800 border border-slate-700 rounded-full mb-3 text-slate-400">
+        <div className="p-3 bg-surface-panel border border-surface-border rounded-full mb-3 text-surface-muted">
           <Info className="w-6 h-6" />
         </div>
-        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700 mb-2">
+        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface-panel text-surface-muted border border-surface-border mb-2">
           {error.code}
         </span>
-        <h4 className="text-sm font-semibold text-slate-200 mb-1">{error.title}</h4>
-        <p className="text-xs text-slate-400 max-w-sm mb-4">
+        <h4 className="text-sm font-semibold text-surface-text mb-1">{error.title}</h4>
+        <p className="text-xs text-surface-muted max-w-sm mb-4">
           The in-flight request was stopped before the server responded.
         </p>
         {onRetry && (
           <button
             type="button"
             onClick={onRetry}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-medium transition cursor-pointer"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 text-white text-xs font-medium transition cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             Send Again
@@ -194,30 +194,30 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
 
     return (
       <div className="flex flex-col items-center justify-center h-full bg-surface-card p-6 text-center overflow-y-auto">
-        <div className="max-w-md w-full bg-[#151D2E] border border-rose-500/30 rounded-xl p-5 shadow-lg shadow-rose-950/20 text-left">
+        <div className="max-w-md w-full bg-surface-panel/50 border border-rose-500/30 rounded-xl p-5 shadow-sm text-left">
           <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 shrink-0">
+            <div className="p-2 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 shrink-0">
               <AlertCircle className="w-5 h-5" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-rose-500/10 text-rose-500 border border-rose-500/20">
                   {errorObj.code}
                 </span>
-                <h4 className="text-xs font-bold text-slate-100 truncate">{errorObj.title}</h4>
+                <h4 className="text-xs font-bold text-surface-text truncate">{errorObj.title}</h4>
               </div>
-              <p className="text-xs text-slate-300 leading-relaxed">{errorObj.message}</p>
+              <p className="text-xs text-surface-text leading-relaxed">{errorObj.message}</p>
             </div>
           </div>
 
           {/* Special SSL Action Button */}
           {errorObj.isSslError && onDisableSslAndRetry && (
             <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg">
-              <div className="flex items-center gap-2 text-xs text-amber-300 font-medium mb-1.5">
-                <ShieldAlert className="w-4 h-4 text-amber-400" />
+              <div className="flex items-center gap-2 text-xs text-amber-500 font-medium mb-1.5">
+                <ShieldAlert className="w-4 h-4 text-amber-500" />
                 <span>Self-signed or invalid SSL certificate</span>
               </div>
-              <p className="text-[11px] text-slate-400 mb-2">
+              <p className="text-[11px] text-surface-muted mb-2">
                 If connecting to a local development or internal service, you can disable SSL certificate verification for this request.
               </p>
               <button
@@ -237,7 +237,7 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
               <button
                 type="button"
                 onClick={() => setShowTechnicalDetails(!showTechnicalDetails)}
-                className="flex items-center justify-between w-full text-[11px] text-surface-muted hover:text-slate-300 cursor-pointer"
+                className="flex items-center justify-between w-full text-[11px] text-surface-muted hover:text-surface-text cursor-pointer"
               >
                 <span>Technical details</span>
                 {showTechnicalDetails ? (
@@ -247,7 +247,7 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
                 )}
               </button>
               {showTechnicalDetails && (
-                <pre className="mt-2 p-2 bg-[#0B0F17] rounded border border-surface-border text-[11px] font-mono text-slate-400 whitespace-pre-wrap break-all select-text">
+                <pre className="mt-2 p-2 bg-surface-panel rounded border border-surface-border text-[11px] font-mono text-surface-text whitespace-pre-wrap break-all select-text">
                   {errorObj.technicalDetails}
                 </pre>
               )}
@@ -260,7 +260,7 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
               <button
                 type="button"
                 onClick={onRetry}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-panel hover:bg-surface-hover border border-surface-border text-slate-200 text-xs font-medium transition cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-panel hover:bg-surface-hover border border-surface-border text-surface-text text-xs font-medium transition cursor-pointer"
               >
                 <RotateCcw className="w-3 h-3" />
                 Retry Request
@@ -276,11 +276,11 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
   if (!response) {
     return (
       <div className="flex flex-col items-center justify-center h-full bg-surface-card p-6 text-center text-surface-muted select-none">
-        <FileText className="w-10 h-10 text-slate-600 mb-3 stroke-[1.5]" />
-        <p className="text-sm font-medium text-slate-400">No Response Yet</p>
-        <p className="text-xs text-slate-500 mt-1">
-          Click <strong className="text-slate-300">Send</strong> or press{' '}
-          <code className="bg-surface-panel px-1.5 py-0.5 rounded text-cyan-400">Ctrl+Enter</code> to execute the request
+        <FileText className="w-10 h-10 text-surface-muted mb-3 stroke-[1.5]" />
+        <p className="text-sm font-medium text-surface-text">No Response Yet</p>
+        <p className="text-xs text-surface-muted mt-1">
+          Click <strong className="text-surface-text">Send</strong> or press{' '}
+          <code className="bg-surface-panel px-1.5 py-0.5 rounded text-brand-primary border border-surface-border">Ctrl+Enter</code> to execute the request
         </p>
       </div>
     );
@@ -323,13 +323,13 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
 
           {/* Time & Size */}
           <span className="flex items-center gap-1 text-surface-muted">
-            <Clock className="w-3.5 h-3.5 text-slate-400" />
-            <span className="font-mono text-slate-300">{response.durationMs} ms</span>
+            <Clock className="w-3.5 h-3.5 text-surface-muted" />
+            <span className="font-mono text-surface-text">{response.durationMs} ms</span>
           </span>
 
           <span className="flex items-center gap-1 text-surface-muted">
-            <Database className="w-3.5 h-3.5 text-slate-400" />
-            <span className="font-mono text-slate-300">{formatSize(response.bodySizeBytes)}</span>
+            <Database className="w-3.5 h-3.5 text-surface-muted" />
+            <span className="font-mono text-surface-text">{formatSize(response.bodySizeBytes)}</span>
           </span>
         </div>
 
@@ -339,10 +339,10 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
             type="button"
             onClick={handleCopy}
             aria-label="Copy response body"
-            className="flex items-center gap-1 text-[11px] text-surface-muted hover:text-slate-200 bg-surface-panel hover:bg-surface-hover border border-surface-border px-2.5 py-1 rounded transition cursor-pointer"
+            className="flex items-center gap-1 text-[11px] text-surface-muted hover:text-surface-text bg-surface-panel hover:bg-surface-hover border border-surface-border px-2.5 py-1 rounded transition cursor-pointer"
             title="Copy Response Body"
           >
-            {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+            {copied ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
             <span>{copied ? 'Copied' : 'Copy'}</span>
           </button>
 
@@ -350,7 +350,7 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
             type="button"
             onClick={handleSaveToFile}
             aria-label="Save response to file"
-            className="flex items-center gap-1 text-[11px] text-surface-muted hover:text-slate-200 bg-surface-panel hover:bg-surface-hover border border-surface-border px-2.5 py-1 rounded transition cursor-pointer"
+            className="flex items-center gap-1 text-[11px] text-surface-muted hover:text-surface-text bg-surface-panel hover:bg-surface-hover border border-surface-border px-2.5 py-1 rounded transition cursor-pointer"
             title="Save Response to File"
           >
             <Download className="w-3 h-3" />
@@ -394,26 +394,26 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
         <div className="p-4 m-2 rounded-lg bg-surface-panel/40 border border-surface-border text-center space-y-3">
           {response.contentType?.toLowerCase().startsWith('image/') ? (
             <div className="flex flex-col items-center">
-              <div className="max-h-72 max-w-full overflow-hidden rounded-lg border border-surface-border bg-slate-950 p-2 shadow-inner">
+              <div className="max-h-72 max-w-full overflow-hidden rounded-lg border border-surface-border bg-surface-panel p-2 shadow-inner">
                 <img
                   src={`data:${response.contentType};base64,${response.body}`}
                   alt="Response preview"
                   className="max-h-64 object-contain mx-auto"
                 />
               </div>
-              <p className="text-[11px] text-slate-400 mt-2 font-mono">
+              <p className="text-[11px] text-surface-muted mt-2 font-mono">
                 {response.contentType} • {formatSize(response.bodySizeBytes)}
               </p>
             </div>
           ) : (
             <div className="flex flex-col items-center py-4">
-              <div className="p-3 rounded-full bg-cyan-500/10 text-cyan-400 mb-2">
+              <div className="p-3 rounded-full bg-cyan-500/10 text-cyan-500 mb-2">
                 <Database className="w-8 h-8" />
               </div>
-              <p className="text-xs font-semibold text-slate-200">
+              <p className="text-xs font-semibold text-surface-text">
                 Binary Payload ({response.contentType || 'application/octet-stream'})
               </p>
-              <p className="text-[11px] text-slate-400 mt-0.5">
+              <p className="text-[11px] text-surface-muted mt-0.5">
                 Size: {formatSize(response.bodySizeBytes)}. Raw binary data cannot be displayed as plain text.
               </p>
             </div>
@@ -435,10 +435,10 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('body-pretty')}
-            className={`flex items-center gap-1 px-3 py-1.5 font-medium border-b-2 transition ${
+            className={`flex items-center gap-1 px-3 py-1.5 font-medium border-b-2 transition cursor-pointer ${
               activeTab === 'body-pretty'
-                ? 'border-brand-500 text-brand-400 bg-surface-card'
-                : 'border-transparent text-surface-muted hover:text-slate-200'
+                ? 'border-brand-500 text-brand-primary bg-surface-card'
+                : 'border-transparent text-surface-muted hover:text-surface-text'
             }`}
           >
             <Code2 className="w-3 h-3" />
@@ -447,10 +447,10 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('body-raw')}
-            className={`flex items-center gap-1 px-3 py-1.5 font-medium border-b-2 transition ${
+            className={`flex items-center gap-1 px-3 py-1.5 font-medium border-b-2 transition cursor-pointer ${
               activeTab === 'body-raw'
-                ? 'border-brand-500 text-brand-400 bg-surface-card'
-                : 'border-transparent text-surface-muted hover:text-slate-200'
+                ? 'border-brand-500 text-brand-primary bg-surface-card'
+                : 'border-transparent text-surface-muted hover:text-surface-text'
             }`}
           >
             <FileText className="w-3 h-3" />
@@ -460,10 +460,10 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
             <button
               type="button"
               onClick={() => setActiveTab('preview')}
-              className={`flex items-center gap-1 px-3 py-1.5 font-medium border-b-2 transition ${
+              className={`flex items-center gap-1 px-3 py-1.5 font-medium border-b-2 transition cursor-pointer ${
                 activeTab === 'preview'
-                  ? 'border-brand-500 text-brand-400 bg-surface-card'
-                  : 'border-transparent text-surface-muted hover:text-slate-200'
+                  ? 'border-brand-500 text-brand-primary bg-surface-card'
+                  : 'border-transparent text-surface-muted hover:text-surface-text'
               }`}
             >
               <Globe className="w-3 h-3" />
@@ -473,10 +473,10 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('headers')}
-            className={`flex items-center gap-1 px-3 py-1.5 font-medium border-b-2 transition ${
+            className={`flex items-center gap-1 px-3 py-1.5 font-medium border-b-2 transition cursor-pointer ${
               activeTab === 'headers'
-                ? 'border-brand-500 text-brand-400 bg-surface-card'
-                : 'border-transparent text-surface-muted hover:text-slate-200'
+                ? 'border-brand-500 text-brand-primary bg-surface-card'
+                : 'border-transparent text-surface-muted hover:text-surface-text'
             }`}
           >
             <List className="w-3 h-3" />
@@ -485,10 +485,10 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('cookies')}
-            className={`flex items-center gap-1 px-3 py-1.5 font-medium border-b-2 transition ${
+            className={`flex items-center gap-1 px-3 py-1.5 font-medium border-b-2 transition cursor-pointer ${
               activeTab === 'cookies'
-                ? 'border-brand-500 text-brand-400 bg-surface-card'
-                : 'border-transparent text-surface-muted hover:text-slate-200'
+                ? 'border-brand-500 text-brand-primary bg-surface-card'
+                : 'border-transparent text-surface-muted hover:text-surface-text'
             }`}
           >
             <CookieIcon className="w-3 h-3" />
@@ -539,8 +539,8 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
                 <tbody className="divide-y divide-surface-border/40">
                   {Object.entries(response.headers).map(([key, val]) => (
                     <tr key={key} className="hover:bg-surface-hover/40 transition">
-                      <td className="py-1.5 px-3 text-brand-300 font-semibold">{key}</td>
-                      <td className="py-1.5 px-3 text-slate-300 break-all">{val}</td>
+                      <td className="py-1.5 px-3 text-brand-primary font-semibold">{key}</td>
+                      <td className="py-1.5 px-3 text-surface-text break-all">{val}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -564,18 +564,18 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
                   <tbody className="divide-y divide-surface-border/40">
                     {response.cookies.map((c, idx) => (
                       <tr key={idx} className="hover:bg-surface-hover/40 transition">
-                        <td className="py-1.5 px-3 text-cyan-300 font-semibold">{c.name}</td>
-                        <td className="py-1.5 px-3 text-slate-300 break-all">{c.value}</td>
-                        <td className="py-1.5 px-3 text-slate-400">{c.domain || '—'}</td>
-                        <td className="py-1.5 px-3 text-slate-400">{c.path || '/'}</td>
-                        <td className="py-1.5 px-3 text-slate-400 flex items-center gap-1">
+                        <td className="py-1.5 px-3 text-brand-primary font-semibold">{c.name}</td>
+                        <td className="py-1.5 px-3 text-surface-text break-all">{c.value}</td>
+                        <td className="py-1.5 px-3 text-surface-muted">{c.domain || '—'}</td>
+                        <td className="py-1.5 px-3 text-surface-muted">{c.path || '/'}</td>
+                        <td className="py-1.5 px-3 text-surface-muted flex items-center gap-1">
                           {c.httpOnly && (
-                            <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px]">
+                            <span className="px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[10px]">
                               HttpOnly
                             </span>
                           )}
                           {c.secure && (
-                            <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 text-[10px]">
+                            <span className="px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[10px]">
                               Secure
                             </span>
                           )}

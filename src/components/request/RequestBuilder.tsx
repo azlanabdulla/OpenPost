@@ -31,31 +31,31 @@ export const RequestBuilder: React.FC<RequestBuilderProps> = ({ request }) => {
         <button
           type="button"
           onClick={() => setActiveTab('params')}
-          className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium border-b-2 transition-all ${
+          className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium border-b-2 transition-all cursor-pointer ${
             activeTab === 'params'
-              ? 'border-brand-500 text-brand-400 bg-surface-card/60'
-              : 'border-transparent text-surface-muted hover:text-slate-200 hover:bg-surface-panel/50'
+              ? 'border-brand-500 text-brand-primary bg-surface-card/60'
+              : 'border-transparent text-surface-muted hover:text-surface-text hover:bg-surface-panel/50'
           }`}
         >
           <ListFilter className="w-3.5 h-3.5" />
           <span>Params</span>
           {activeParamsCount > 0 && (
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-400 ml-0.5" />
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-primary ml-0.5" />
           )}
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('headers')}
-          className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium border-b-2 transition-all ${
+          className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium border-b-2 transition-all cursor-pointer ${
             activeTab === 'headers'
-              ? 'border-brand-500 text-brand-400 bg-surface-card/60'
-              : 'border-transparent text-surface-muted hover:text-slate-200 hover:bg-surface-panel/50'
+              ? 'border-brand-500 text-brand-primary bg-surface-card/60'
+              : 'border-transparent text-surface-muted hover:text-surface-text hover:bg-surface-panel/50'
           }`}
         >
           <span>Headers</span>
           {activeHeadersCount > 0 && (
-            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-surface-panel text-slate-300 font-mono">
+            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-surface-panel text-surface-text border border-surface-border font-mono">
               {activeHeadersCount}
             </span>
           )}
@@ -64,16 +64,16 @@ export const RequestBuilder: React.FC<RequestBuilderProps> = ({ request }) => {
         <button
           type="button"
           onClick={() => setActiveTab('body')}
-          className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium border-b-2 transition-all ${
+          className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium border-b-2 transition-all cursor-pointer ${
             activeTab === 'body'
-              ? 'border-brand-500 text-brand-400 bg-surface-card/60'
-              : 'border-transparent text-surface-muted hover:text-slate-200 hover:bg-surface-panel/50'
+              ? 'border-brand-500 text-brand-primary bg-surface-card/60'
+              : 'border-transparent text-surface-muted hover:text-surface-text hover:bg-surface-panel/50'
           }`}
         >
           <FileCode className="w-3.5 h-3.5" />
           <span>Body</span>
           {hasBody && (
-            <span className="px-1.5 py-0.2 rounded text-[10px] bg-brand-500/20 text-brand-300 uppercase font-mono">
+            <span className="px-1.5 py-0.2 rounded text-[10px] bg-brand-500/10 text-brand-primary border border-brand-500/20 uppercase font-mono">
               {request.body.type}
             </span>
           )}
@@ -82,32 +82,32 @@ export const RequestBuilder: React.FC<RequestBuilderProps> = ({ request }) => {
         <button
           type="button"
           onClick={() => setActiveTab('auth')}
-          className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium border-b-2 transition-all ${
+          className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium border-b-2 transition-all cursor-pointer ${
             activeTab === 'auth'
-              ? 'border-brand-500 text-brand-400 bg-surface-card/60'
-              : 'border-transparent text-surface-muted hover:text-slate-200 hover:bg-surface-panel/50'
+              ? 'border-brand-500 text-brand-primary bg-surface-card/60'
+              : 'border-transparent text-surface-muted hover:text-surface-text hover:bg-surface-panel/50'
           }`}
         >
           <KeyRound className="w-3.5 h-3.5" />
           <span>Auth</span>
           {hasAuth && (
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 ml-0.5" />
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 ml-0.5" />
           )}
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('settings')}
-          className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium border-b-2 transition-all ${
+          className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium border-b-2 transition-all cursor-pointer ${
             activeTab === 'settings'
-              ? 'border-brand-500 text-brand-400 bg-surface-card/60'
-              : 'border-transparent text-surface-muted hover:text-slate-200 hover:bg-surface-panel/50'
+              ? 'border-brand-500 text-brand-primary bg-surface-card/60'
+              : 'border-transparent text-surface-muted hover:text-surface-text hover:bg-surface-panel/50'
           }`}
         >
           <Sliders className="w-3.5 h-3.5" />
           <span>Settings</span>
           {hasSslDisabled && (
-            <ShieldAlert className="w-3.5 h-3.5 text-amber-400 ml-0.5" />
+            <ShieldAlert className="w-3.5 h-3.5 text-amber-500 ml-0.5" />
           )}
         </button>
       </div>

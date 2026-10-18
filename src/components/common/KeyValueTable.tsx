@@ -106,7 +106,7 @@ export const KeyValueTable: React.FC<KeyValueTableProps> = ({
                     aria-label={`${keyPlaceholder} name`}
                     placeholder={keyPlaceholder}
                     onChange={(e) => handleUpdate(row.id, 'key', e.target.value)}
-                    className="w-full bg-transparent px-2 py-1 text-slate-200 placeholder-slate-600 focus:outline-none focus:bg-surface-panel/50 rounded font-mono"
+                    className="w-full bg-transparent px-2 py-1 text-surface-text placeholder:text-surface-muted focus:outline-none focus:bg-surface-panel/50 rounded font-mono"
                   />
                 </td>
                 <td className="py-1 px-2 border-r border-surface-border/30">
@@ -116,7 +116,7 @@ export const KeyValueTable: React.FC<KeyValueTableProps> = ({
                     aria-label={`${valuePlaceholder} value`}
                     placeholder={valuePlaceholder}
                     onChange={(e) => handleUpdate(row.id, 'value', e.target.value)}
-                    className="w-full bg-transparent px-2 py-1 text-slate-200 placeholder-slate-600 focus:outline-none focus:bg-surface-panel/50 rounded font-mono"
+                    className="w-full bg-transparent px-2 py-1 text-surface-text placeholder:text-surface-muted focus:outline-none focus:bg-surface-panel/50 rounded font-mono"
                   />
                 </td>
                 {showDescription && (
@@ -127,7 +127,7 @@ export const KeyValueTable: React.FC<KeyValueTableProps> = ({
                       aria-label="Parameter description"
                       placeholder="Optional description"
                       onChange={(e) => handleUpdate(row.id, 'description', e.target.value)}
-                      className="w-full bg-transparent px-2 py-1 text-slate-400 text-xs placeholder-slate-600 focus:outline-none focus:bg-surface-panel/50 rounded"
+                      className="w-full bg-transparent px-2 py-1 text-surface-text text-xs placeholder:text-surface-muted focus:outline-none focus:bg-surface-panel/50 rounded"
                     />
                   </td>
                 )}
@@ -136,7 +136,7 @@ export const KeyValueTable: React.FC<KeyValueTableProps> = ({
                     type="button"
                     aria-label={`Delete row ${row.key || ''}`}
                     onClick={() => handleDelete(row.id)}
-                    className="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-red-400 focus:outline-none p-1 rounded transition cursor-pointer"
+                    className="opacity-0 group-hover:opacity-100 text-surface-muted hover:text-rose-500 focus:outline-none p-1 rounded transition cursor-pointer"
                     title="Delete row"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -151,12 +151,12 @@ export const KeyValueTable: React.FC<KeyValueTableProps> = ({
         <button
           type="button"
           onClick={handleAddRow}
-          className="flex items-center gap-1.5 text-xs text-brand-400 hover:text-brand-300 font-medium px-2 py-1 rounded hover:bg-brand-500/10 transition"
+          className="flex items-center gap-1.5 text-xs text-brand-primary hover:text-brand-hover font-medium px-2 py-1 rounded hover:bg-brand-500/10 transition cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5" />
           Add Row
         </button>
-        <span className="text-[11px] text-surface-muted">
+        <span className="text-[11px] text-surface-muted font-mono">
           {items.filter((i) => i.enabled && i.key.trim()).length} active / {items.length} total
         </span>
       </div>

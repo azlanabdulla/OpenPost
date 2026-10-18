@@ -38,7 +38,7 @@ export const ToastContainer: React.FC = () => {
             key={toast.id}
             role="status"
             aria-live="polite"
-            className={`pointer-events-auto flex items-start gap-3 p-3 rounded-xl border ${borderClass} ${bgClass} shadow-xl shadow-black/40 text-slate-100 transition-all animate-in slide-in-from-bottom-2 duration-200 select-text`}
+            className={`pointer-events-auto flex items-start gap-3 p-3 rounded-xl border ${borderClass} ${bgClass} shadow-xl shadow-black/10 dark:shadow-black/40 text-surface-text transition-all animate-in slide-in-from-bottom-2 duration-200 select-text`}
           >
             <IconComponent className={`w-4 h-4 mt-0.5 shrink-0 ${iconColor}`} />
             <div className="flex-1 min-w-0">
@@ -53,7 +53,7 @@ export const ToastContainer: React.FC = () => {
               type="button"
               aria-label="Dismiss notification"
               onClick={() => removeToast(toast.id)}
-              className="p-1 rounded-md text-surface-muted hover:text-slate-200 hover:bg-surface-panel transition cursor-pointer"
+              className="p-1 rounded-md text-surface-muted hover:text-surface-text hover:bg-surface-panel transition cursor-pointer"
             >
               <X className="w-3.5 h-3.5" />
             </button>

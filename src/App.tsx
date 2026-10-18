@@ -197,7 +197,7 @@ export const App: React.FC = () => {
   if (!activeTab) return null;
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-surface-base text-slate-100 font-sans">
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-surface-base text-surface-text font-sans">
       {/* 1. App Top Header */}
       <Header
         onOpenImport={() => setIsImportOpen(true)}
@@ -279,7 +279,7 @@ export const App: React.FC = () => {
             <button
               type="button"
               onClick={() => setUndefinedVarsModal(null)}
-              className="px-3 py-1.5 rounded-lg border border-surface-border hover:bg-surface-panel text-slate-300 text-xs transition cursor-pointer"
+              className="px-3 py-1.5 rounded-lg border border-surface-border hover:bg-surface-panel text-surface-text text-xs transition cursor-pointer"
             >
               Cancel
             </button>
@@ -302,13 +302,13 @@ export const App: React.FC = () => {
             {undefinedVarsModal?.undefinedVars.map((v) => (
               <span
                 key={v}
-                className="px-2 py-0.5 rounded font-mono text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                className="px-2 py-0.5 rounded font-mono text-xs bg-amber-500/10 text-amber-500 border border-amber-500/20"
               >
                 {`{{${v}}}`}
               </span>
             ))}
           </div>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-surface-muted">
             Sending this request will transmit unresolved literal braces to the target host.
           </p>
         </div>

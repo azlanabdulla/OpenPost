@@ -156,7 +156,7 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
             <button
               type="button"
               onClick={() => setCurlReport(null)}
-              className="px-3 py-1.5 rounded-lg border border-surface-border hover:bg-surface-panel text-slate-300 text-xs transition cursor-pointer"
+              className="px-3 py-1.5 rounded-lg border border-surface-border hover:bg-surface-panel text-surface-text text-xs transition cursor-pointer"
             >
               Back / Edit cURL
             </button>
@@ -174,7 +174,7 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
             <button
               type="button"
               onClick={() => setImportSummary(null)}
-              className="px-3 py-1.5 rounded-lg border border-surface-border hover:bg-surface-panel text-slate-300 text-xs transition cursor-pointer"
+              className="px-3 py-1.5 rounded-lg border border-surface-border hover:bg-surface-panel text-surface-text text-xs transition cursor-pointer"
             >
               Back
             </button>
@@ -192,7 +192,7 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
             <button
               type="button"
               onClick={handleClose}
-              className="px-3 py-1.5 rounded-lg border border-surface-border hover:bg-surface-panel text-slate-300 text-xs transition cursor-pointer"
+              className="px-3 py-1.5 rounded-lg border border-surface-border hover:bg-surface-panel text-surface-text text-xs transition cursor-pointer"
             >
               Cancel
             </button>
@@ -209,13 +209,13 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
     >
       {curlReport ? (
         /* cURL Unsupported-Flag Report View */
-        <div className="py-2 space-y-4 text-xs text-slate-200">
+        <div className="py-2 space-y-4 text-xs text-surface-text">
           <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 space-y-1.5">
-            <h5 className="font-semibold text-amber-300 flex items-center gap-1.5 text-xs">
-              <ShieldAlert className="w-4 h-4 text-amber-400" />
+            <h5 className="font-semibold text-amber-500 flex items-center gap-1.5 text-xs">
+              <ShieldAlert className="w-4 h-4 text-amber-500" />
               {curlReport.unsupportedFlags.length} Unsupported Flag(s) Detected
             </h5>
-            <p className="text-[11px] text-slate-300">
+            <p className="text-[11px] text-surface-muted">
               The following command-line flags cannot be executed directly in OpenPost's desktop HTTP engine and will be omitted:
             </p>
           </div>
@@ -227,27 +227,27 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
                 'Flag is not supported in desktop HTTP requests and will be ignored.';
               return (
                 <div key={flag} className="p-2.5 flex items-start justify-between gap-3 text-xs">
-                  <div className="font-mono font-semibold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 shrink-0">
+                  <div className="font-mono font-semibold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 shrink-0">
                     {flag}
                   </div>
-                  <div className="text-[11px] text-slate-300 flex-1">{description}</div>
+                  <div className="text-[11px] text-surface-text flex-1">{description}</div>
                 </div>
               );
             })}
           </div>
 
           <div className="p-3 rounded-lg bg-surface-panel/40 border border-surface-border space-y-1.5">
-            <div className="font-semibold text-slate-300 flex items-center gap-1.5 text-[11px]">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+            <div className="font-semibold text-surface-text flex items-center gap-1.5 text-[11px]">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
               Request will be imported as:
             </div>
             <div className="flex items-center gap-2 font-mono text-[11px] pt-1">
-              <span className="px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-300 font-bold">
+              <span className="px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-primary font-bold">
                 {curlReport.request.method}
               </span>
-              <span className="text-slate-200 truncate">{curlReport.request.url || 'No URL specified'}</span>
+              <span className="text-surface-text truncate">{curlReport.request.url || 'No URL specified'}</span>
             </div>
-            <div className="text-[10px] text-slate-400 pt-1">
+            <div className="text-[10px] text-surface-muted pt-1">
               Headers: {curlReport.request.headers.length} | Body type: {curlReport.request.body.type} | SSL verification:{' '}
               {curlReport.request.settings?.verifySsl === false ? 'Disabled (-k)' : 'Enabled'}
             </div>
@@ -255,22 +255,22 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
         </div>
       ) : importSummary ? (
         /* Postman Collection Summary View */
-        <div className="py-2 space-y-4 text-xs text-slate-200">
+        <div className="py-2 space-y-4 text-xs text-surface-text">
           <div className="p-3 rounded-lg bg-surface-panel/40 border border-surface-border space-y-2">
-            <h4 className="font-semibold text-slate-100 flex items-center gap-2 text-sm">
-              <Layers className="w-4 h-4 text-brand-400" />
+            <h4 className="font-semibold text-surface-text flex items-center gap-2 text-sm">
+              <Layers className="w-4 h-4 text-brand-primary" />
               {importSummary.collectionName}
             </h4>
-            <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-300 pt-1">
-              <div className="bg-slate-900/40 p-2 rounded border border-surface-border">
-                <span className="text-slate-400 block">Total Requests</span>
-                <span className="text-base font-semibold text-brand-300 font-mono">
+            <div className="grid grid-cols-2 gap-2 text-[11px] text-surface-text pt-1">
+              <div className="bg-surface-panel p-2 rounded border border-surface-border">
+                <span className="text-surface-muted block">Total Requests</span>
+                <span className="text-base font-semibold text-brand-primary font-mono">
                   {importSummary.requests.length}
                 </span>
               </div>
-              <div className="bg-slate-900/40 p-2 rounded border border-surface-border">
-                <span className="text-slate-400 block">Folders Detected</span>
-                <span className="text-base font-semibold text-slate-200 font-mono">
+              <div className="bg-surface-panel p-2 rounded border border-surface-border">
+                <span className="text-surface-muted block">Folders Detected</span>
+                <span className="text-base font-semibold text-surface-text font-mono">
                   {importSummary.summary.foldersCount}
                 </span>
               </div>
@@ -279,9 +279,9 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
 
           {/* Requests Preview List */}
           <div className="space-y-1.5">
-            <div className="text-[11px] font-semibold text-slate-300 flex items-center justify-between">
+            <div className="text-[11px] font-semibold text-surface-text flex items-center justify-between">
               <span>Collection Endpoints ({importSummary.requests.length})</span>
-              <span className="text-[10px] text-slate-400">Ready to import</span>
+              <span className="text-[10px] text-surface-muted">Ready to import</span>
             </div>
             <div className="max-h-36 overflow-y-auto rounded-lg border border-surface-border bg-surface-panel/20 divide-y divide-surface-border/50">
               {importSummary.requests.slice(0, 10).map((req, idx) => (
@@ -289,26 +289,26 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
                   <span
                     className={`px-1.5 py-0.5 rounded text-[10px] font-bold font-mono ${
                       req.method === 'GET'
-                        ? 'bg-blue-500/20 text-blue-300'
+                        ? 'bg-blue-500/20 text-blue-500'
                         : req.method === 'POST'
-                        ? 'bg-emerald-500/20 text-emerald-300'
+                        ? 'bg-emerald-500/20 text-emerald-500'
                         : req.method === 'PUT'
-                        ? 'bg-amber-500/20 text-amber-300'
+                        ? 'bg-amber-500/20 text-amber-500'
                         : req.method === 'DELETE'
-                        ? 'bg-rose-500/20 text-rose-300'
-                        : 'bg-purple-500/20 text-purple-300'
+                        ? 'bg-rose-500/20 text-rose-500'
+                        : 'bg-purple-500/20 text-purple-500'
                     }`}
                   >
                     {req.method}
                   </span>
-                  <span className="font-medium text-slate-200 truncate flex-1">{req.name}</span>
-                  <span className="text-[10px] text-slate-400 font-mono truncate max-w-[180px]">
+                  <span className="font-medium text-surface-text truncate flex-1">{req.name}</span>
+                  <span className="text-[10px] text-surface-muted font-mono truncate max-w-[180px]">
                     {req.url}
                   </span>
                 </div>
               ))}
               {importSummary.requests.length > 10 && (
-                <div className="p-1.5 text-center text-[10px] text-slate-400 bg-surface-panel/40">
+                <div className="p-1.5 text-center text-[10px] text-surface-muted bg-surface-panel/40">
                   + {importSummary.requests.length - 10} additional request(s)
                 </div>
               )}
@@ -317,14 +317,14 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
 
           {importSummary.summary.skippedFeatures.length > 0 && (
             <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 space-y-1.5">
-              <h5 className="font-semibold text-amber-300 flex items-center gap-1.5 text-xs">
-                <AlertTriangle className="w-3.5 h-3.5" />
+              <h5 className="font-semibold text-amber-500 flex items-center gap-1.5 text-xs">
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
                 Skipped Unsupported Features ({importSummary.summary.skippedFeatures.length})
               </h5>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-surface-muted">
                 OpenPost operates strictly local-first with transparent execution:
               </p>
-              <ul className="list-disc list-inside space-y-0.5 text-[11px] text-slate-300 font-mono pl-1">
+              <ul className="list-disc list-inside space-y-0.5 text-[11px] text-surface-text font-mono pl-1">
                 {importSummary.summary.skippedFeatures.map((feat, idx) => (
                   <li key={idx}>{feat}</li>
                 ))}
@@ -334,7 +334,7 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
         </div>
       ) : (
         /* Input Selection View */
-        <div className="py-2 space-y-3.5 text-xs text-slate-200">
+        <div className="py-2 space-y-3.5 text-xs text-surface-text">
           {/* Tabs */}
           <div className="flex border-b border-surface-border">
             <button
@@ -345,8 +345,8 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
               }}
               className={`flex items-center gap-1.5 px-3 py-2 font-medium border-b-2 transition cursor-pointer ${
                 importType === 'curl'
-                  ? 'border-brand-500 text-brand-300'
-                  : 'border-transparent text-slate-400 hover:text-slate-200'
+                  ? 'border-brand-500 text-brand-primary'
+                  : 'border-transparent text-surface-muted hover:text-surface-text'
               }`}
             >
               <Terminal className="w-3.5 h-3.5" />
@@ -361,8 +361,8 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
               }}
               className={`flex items-center gap-1.5 px-3 py-2 font-medium border-b-2 transition cursor-pointer ${
                 importType === 'postman'
-                  ? 'border-brand-500 text-brand-300'
-                  : 'border-transparent text-slate-400 hover:text-slate-200'
+                  ? 'border-brand-500 text-brand-primary'
+                  : 'border-transparent text-surface-muted hover:text-surface-text'
               }`}
             >
               <FileJson className="w-3.5 h-3.5" />
@@ -372,15 +372,15 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
 
           {/* Error Message banner */}
           {errorMessage && (
-            <div className="p-2.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-300 flex items-start gap-2 text-xs">
-              <AlertTriangle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
+            <div className="p-2.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 flex items-start gap-2 text-xs">
+              <AlertTriangle className="w-4 h-4 shrink-0 text-rose-500 mt-0.5" />
               <span>{errorMessage}</span>
             </div>
           )}
 
           {importType === 'curl' ? (
             <div>
-              <label className="block text-[11px] text-slate-400 mb-1">
+              <label className="block text-[11px] text-surface-muted mb-1">
                 Paste raw cURL string
               </label>
               <textarea
@@ -388,25 +388,25 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
                 onChange={(e) => setInputContent(e.target.value)}
                 placeholder="curl -X POST https://api.example.com/v1/orders -H 'Content-Type: application/json' -d '{...}'"
                 rows={6}
-                className="w-full bg-surface-panel text-slate-200 p-2.5 rounded-md border border-surface-border font-mono text-xs focus:border-brand-500 focus:outline-none"
+                className="w-full bg-surface-panel text-surface-text placeholder:text-surface-muted p-2.5 rounded-md border border-surface-border font-mono text-xs focus:border-brand-500 focus:outline-none"
               />
             </div>
           ) : (
             <div className="space-y-3">
               <div>
-                <label className="block text-[11px] text-slate-400 mb-1">
+                <label className="block text-[11px] text-surface-muted mb-1">
                   Upload Collection File (.json, max 10MB)
                 </label>
                 <input
                   type="file"
                   accept=".json,application/json"
                   onChange={handleFileUpload}
-                  className="w-full text-xs text-slate-400 file:mr-2.5 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-xs file:font-medium file:bg-surface-panel file:text-slate-200 hover:file:bg-surface-border file:cursor-pointer"
+                  className="w-full text-xs text-surface-muted file:mr-2.5 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-xs file:font-medium file:bg-surface-panel file:text-surface-text hover:file:bg-surface-border file:cursor-pointer"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] text-slate-400 mb-1">
+                <label className="block text-[11px] text-surface-muted mb-1">
                   Or paste raw JSON content
                 </label>
                 <textarea
@@ -414,7 +414,7 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
                   onChange={(e) => setInputContent(e.target.value)}
                   placeholder="Paste collection JSON here..."
                   rows={5}
-                  className="w-full bg-surface-panel text-slate-200 p-2.5 rounded-md border border-surface-border font-mono text-xs focus:border-brand-500 focus:outline-none"
+                  className="w-full bg-surface-panel text-surface-text placeholder:text-surface-muted p-2.5 rounded-md border border-surface-border font-mono text-xs focus:border-brand-500 focus:outline-none"
                 />
               </div>
             </div>

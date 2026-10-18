@@ -79,10 +79,10 @@ export const BodyEditor: React.FC<BodyEditorProps> = ({ body, onChange }) => {
               key={bt.type}
               type="button"
               onClick={() => handleTypeChange(bt.type)}
-              className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${
+              className={`px-3 py-1 rounded-md text-xs font-medium transition-all cursor-pointer ${
                 body.type === bt.type
-                  ? 'bg-brand-500/20 text-brand-300 border border-brand-500/50 shadow-sm'
-                  : 'text-surface-muted hover:text-slate-200 hover:bg-surface-panel border border-transparent'
+                  ? 'bg-brand-500/10 text-brand-primary border border-brand-500/30 shadow-sm'
+                  : 'text-surface-muted hover:text-surface-text hover:bg-surface-panel border border-transparent'
               }`}
             >
               {bt.label}
@@ -93,8 +93,8 @@ export const BodyEditor: React.FC<BodyEditorProps> = ({ body, onChange }) => {
         {body.type === 'json' && (
           <div className="flex items-center gap-2">
             {!validationResult.isValid && (
-              <span className="flex items-center gap-1 text-[11px] text-rose-400 bg-rose-500/10 border border-rose-500/30 px-2 py-0.5 rounded font-mono">
-                <AlertCircle className="w-3 h-3 text-rose-400 shrink-0" />
+              <span className="flex items-center gap-1 text-[11px] text-rose-500 bg-rose-500/10 border border-rose-500/30 px-2 py-0.5 rounded font-mono">
+                <AlertCircle className="w-3 h-3 text-rose-500 shrink-0" />
                 <span>
                   OP-BODY-001: Invalid JSON
                   {validationResult.line !== undefined &&
@@ -107,7 +107,7 @@ export const BodyEditor: React.FC<BodyEditorProps> = ({ body, onChange }) => {
             <button
               type="button"
               onClick={handleFormatJson}
-              className="flex items-center gap-1 text-xs text-brand-400 hover:text-brand-300 bg-surface-panel hover:bg-surface-hover border border-surface-border px-2.5 py-1 rounded transition cursor-pointer"
+              className="flex items-center gap-1 text-xs text-brand-primary hover:text-brand-hover bg-surface-panel hover:bg-surface-hover border border-surface-border px-2.5 py-1 rounded transition cursor-pointer"
               title="Prettify JSON"
             >
               <Wand2 className="w-3.5 h-3.5" />
@@ -121,8 +121,8 @@ export const BodyEditor: React.FC<BodyEditorProps> = ({ body, onChange }) => {
       <div className="flex-1 min-h-[220px]">
         {body.type === 'none' && (
           <div className="flex flex-col items-center justify-center h-full text-center text-surface-muted py-12 border border-dashed border-surface-border rounded-lg bg-surface-panel/20">
-            <p className="text-sm font-medium text-slate-400">This request does not have a body</p>
-            <p className="text-xs text-slate-500 mt-1">Select JSON, Text, or Form-Data above to send payload data</p>
+            <p className="text-sm font-medium text-surface-text">This request does not have a body</p>
+            <p className="text-xs text-surface-muted mt-1">Select JSON, Text, or Form-Data above to send payload data</p>
           </div>
         )}
 
@@ -191,7 +191,7 @@ export const BodyEditor: React.FC<BodyEditorProps> = ({ body, onChange }) => {
                           value={row.key}
                           placeholder="Key"
                           onChange={(e) => updateMultipartField(row.id, { key: e.target.value })}
-                          className="w-full bg-transparent px-2 py-1 text-slate-200 placeholder-slate-600 focus:outline-none rounded"
+                          className="w-full bg-transparent px-2 py-1 text-surface-text placeholder:text-surface-muted focus:outline-none rounded"
                         />
                       </td>
                       <td className="py-1 px-2 border-r border-surface-border/30">
@@ -203,7 +203,7 @@ export const BodyEditor: React.FC<BodyEditorProps> = ({ body, onChange }) => {
                               value: '',
                             })
                           }
-                          className="bg-surface-panel text-slate-300 text-xs px-2 py-1 rounded border border-surface-border"
+                          className="bg-surface-panel text-surface-text text-xs px-2 py-1 rounded border border-surface-border cursor-pointer"
                         >
                           <option value="text">Text</option>
                           <option value="file">File</option>
@@ -217,10 +217,10 @@ export const BodyEditor: React.FC<BodyEditorProps> = ({ body, onChange }) => {
                               value={row.value}
                               placeholder="Local file path"
                               onChange={(e) => updateMultipartField(row.id, { value: e.target.value })}
-                              className="flex-1 bg-transparent px-2 py-1 text-slate-300 placeholder-slate-600 focus:outline-none rounded"
+                              className="flex-1 bg-transparent px-2 py-1 text-surface-text placeholder:text-surface-muted focus:outline-none rounded"
                             />
-                            <label className="cursor-pointer flex items-center gap-1 px-2 py-1 bg-surface-panel hover:bg-surface-hover border border-surface-border text-slate-300 rounded text-xs">
-                              <Upload className="w-3 h-3 text-brand-400" />
+                            <label className="cursor-pointer flex items-center gap-1 px-2 py-1 bg-surface-panel hover:bg-surface-hover border border-surface-border text-surface-text rounded text-xs transition">
+                              <Upload className="w-3 h-3 text-brand-primary" />
                               Browse
                               <input
                                 type="file"
@@ -241,7 +241,7 @@ export const BodyEditor: React.FC<BodyEditorProps> = ({ body, onChange }) => {
                             value={row.value}
                             placeholder="Value"
                             onChange={(e) => updateMultipartField(row.id, { value: e.target.value })}
-                            className="w-full bg-transparent px-2 py-1 text-slate-200 placeholder-slate-600 focus:outline-none rounded"
+                            className="w-full bg-transparent px-2 py-1 text-surface-text placeholder:text-surface-muted focus:outline-none rounded"
                           />
                         )}
                       </td>
@@ -249,7 +249,7 @@ export const BodyEditor: React.FC<BodyEditorProps> = ({ body, onChange }) => {
                         <button
                           type="button"
                           onClick={() => deleteMultipartField(row.id)}
-                          className="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-red-400 p-1"
+                          className="opacity-0 group-hover:opacity-100 text-surface-muted hover:text-red-500 p-1"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
