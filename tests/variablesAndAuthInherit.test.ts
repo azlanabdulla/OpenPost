@@ -131,7 +131,7 @@ describe('Variable Resolution Precedence, Cycle Detection, and Auth Inherit (OP-
     };
 
     const variables = {
-      domain: 'api.openpost.dev',
+      domain: 'api.example.com',
       userId: '42',
       fields: 'name,email',
       tenant: 'acme-corp',
@@ -142,7 +142,7 @@ describe('Variable Resolution Precedence, Cycle Detection, and Auth Inherit (OP-
 
     expect(result.hasCycle).toBe(false);
     expect(result.undefinedVars).toEqual([]);
-    expect(result.resolvedRequest.url).toBe('https://api.openpost.dev/v1/users/42');
+    expect(result.resolvedRequest.url).toBe('https://api.example.com/v1/users/42');
     expect(result.resolvedRequest.params[0].value).toBe('name,email');
     expect(result.resolvedRequest.headers[0].value).toBe('acme-corp');
     expect(result.resolvedRequest.body.rawJson).toContain('"acme-corp"');

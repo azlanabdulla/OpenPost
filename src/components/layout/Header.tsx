@@ -1,6 +1,7 @@
 import React from 'react';
 import { Sun, Moon, Monitor, Shield, ExternalLink, Upload, Download, Settings, Info, Command } from 'lucide-react';
 import { useThemeStore } from '../../stores/themeStore';
+import { CANONICAL_LINKS } from '../../config/links';
 
 interface HeaderProps {
   onOpenImport?: () => void;
@@ -144,7 +145,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* GitHub Link */}
         <a
-          href="https://github.com/openpost/openpost"
+          href={CANONICAL_LINKS.REPO}
           target="_blank"
           rel="noreferrer"
           aria-label="OpenPost GitHub repository"

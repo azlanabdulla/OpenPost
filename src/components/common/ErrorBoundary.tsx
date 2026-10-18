@@ -2,6 +2,7 @@ import { Component, ErrorInfo, ReactNode } from 'react';
 import { createSanitizedDiagnostics } from '../../utils/sanitizer';
 import { APP_MESSAGES } from '../../messages';
 import { AlertOctagon, RotateCcw, Copy, Check, ExternalLink } from 'lucide-react';
+import { CANONICAL_LINKS } from '../../config/links';
 
 interface Props {
   children: ReactNode;
@@ -105,7 +106,7 @@ export class ErrorBoundary extends Component<Props, State> {
               </button>
 
               <a
-                href="https://github.com/openpost/openpost/issues/new"
+                href={CANONICAL_LINKS.NEW_ISSUE}
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg border border-surface-border hover:bg-surface-panel text-surface-muted hover:text-surface-text text-xs transition"

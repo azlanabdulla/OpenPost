@@ -8,4 +8,4 @@ We pledge to act and interact in ways that contribute to an open, welcoming, div
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leadership at `conduct@openpost.app`. All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project maintainers via the [OpenPost GitHub Repository](https://github.com/azlanabdulla/OpenPost). All complaints will be reviewed and investigated promptly and fairly.

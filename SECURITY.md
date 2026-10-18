@@ -12,8 +12,8 @@ We take the security of OpenPost seriously. Because OpenPost handles local netwo
 
 If you believe you have discovered a security vulnerability in OpenPost, please **DO NOT** open a public GitHub issue.
 
-Instead, please report it via GitHub Private Vulnerability Reporting or email:
-`security@openpost.app`
+Instead, please report it privately via GitHub Security Advisories:
+https://github.com/azlanabdulla/OpenPost/security/advisories/new
 
 Please provide:
 - A description of the vulnerability.

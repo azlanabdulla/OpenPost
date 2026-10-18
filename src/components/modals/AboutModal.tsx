@@ -3,6 +3,7 @@ import { Modal } from '../common/Modal';
 import { Github, Shield, Copy, Check, Heart } from 'lucide-react';
 import { createSanitizedDiagnostics } from '../../utils/sanitizer';
 import { useToastStore } from '../../stores/toastStore';
+import { CANONICAL_LINKS } from '../../config/links';
 
 interface AboutModalProps {
   isOpen: boolean;
@@ -98,7 +99,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
 
         <div className="pt-1 flex items-center gap-4 text-surface-muted">
           <a
-            href="https://github.com/openpost/openpost"
+            href={CANONICAL_LINKS.REPO}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 hover:text-surface-text transition"
@@ -108,7 +109,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
           </a>
           <span>•</span>
           <a
-            href="https://github.com/openpost/openpost/blob/main/LICENSE"
+            href={CANONICAL_LINKS.LICENSE}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 hover:text-surface-text transition"

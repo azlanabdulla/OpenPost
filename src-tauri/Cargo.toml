@@ -5,6 +5,7 @@ description = "The free, open-source Postman alternative"
 authors = ["OpenPost Contributors"]
 license = "MIT"
 repository = "https://github.com/azlanabdulla/OpenPost"
+homepage = "https://github.com/azlanabdulla/OpenPost"
 edition = "2021"
 default-run = "openpost"
 
