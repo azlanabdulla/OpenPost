@@ -67,7 +67,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
 
         <div className="space-y-2 text-surface-text">
           <p>
-            OpenPost is built as a transparent, high-performance API client without user accounts, cloud dependencies, or usage limits. Your requests, environments, and secrets stay strictly on your local computer.
+            OpenPost is built as a transparent, high-performance API client without user accounts, cloud dependencies, or usage limits. Your requests, environments, and secrets stay strictly on your local computer. OpenPost makes no network calls except the requests you send. The sponsor and GitHub links open in your browser only when you click them.
           </p>
         </div>
 

@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Added
+- **Support OpenPost**:
+  - Non-intrusive "Support" heart button in the application header with accessible tooltip and dialog.
+  - Dedicated "Support OpenPost" modal offering GitHub Sponsor and Star actions with zero remote assets or telemetry.
+  - Quick action row in About dialog and Command Palette entry (`Support OpenPost`).
+  - Scoped URL allowlist and safe external link opener routing exclusively to canonical repository destinations.
+
+### Fixed
+- **Canonical Repository URLs**:
+  - Replaced all outdated and placeholder repository URLs with canonical destination (`https://github.com/azlanabdulla/OpenPost`).
+  - Added automated URL integrity scanner to test suite and CI pipeline preventing accidental placeholder links.
+  - Removed references to unowned external domains.
+
 ## [0.1.0] - 2026-10-18
 
 ### Added

@@ -52,7 +52,7 @@ export const WelcomeModal: React.FC = () => {
             <div>
               <p className="font-semibold text-surface-text">100% Local-First</p>
               <p className="text-[11px] text-surface-muted mt-0.5">
-                No cloud account, no login required, zero telemetry, and zero tracking.
+                No cloud account, no login required, zero telemetry, and zero tracking. OpenPost makes no network calls except the requests you send. The sponsor and GitHub links open in your browser only when you click them.
               </p>
             </div>
           </div>

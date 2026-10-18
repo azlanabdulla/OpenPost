@@ -17,6 +17,10 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/sponsors/azlanabdulla"><img src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub"></a>
+</p>
+
+<p align="center">
   <a href="#about-openpost">About</a> •
   <a href="#screenshots">Screenshots</a> •
   <a href="#features">Features</a> •
@@ -27,6 +31,7 @@
   <a href="#data-storage--privacy">Privacy & Data</a> •
   <a href="#comparison">Comparison</a> •
   <a href="#troubleshooting--faq">FAQ</a> •
+  <a href="#support-openpost">Support</a> •
   <a href="#build-from-source">Build from Source</a>
 </p>
 
@@ -216,7 +221,7 @@ Global Variables   (Lowest Precedence)
 
 ## Data Storage & Privacy
 
-OpenPost guarantees that **no telemetry, usage metrics, or background network calls** will ever occur. Network connections are initiated solely when you explicitly click **Send**.
+OpenPost guarantees that **no telemetry, usage metrics, or background network calls** will ever occur. OpenPost makes no network calls except the requests you send. The sponsor and GitHub links open in your browser only when you click them. Network connections are initiated solely when you explicitly click **Send** or click an external repository link.
 
 ### File Storage Locations
 All configurations, persistent history, and drafts are stored locally:
@@ -336,6 +341,14 @@ We welcome issues and pull requests from the developer community!
 - [ ] gRPC protobuf client integration
 - [ ] Built-in lightweight mock server runner
 - [ ] CLI runner for automated CI/CD collection execution
+
+---
+
+## Support OpenPost
+
+OpenPost is free and open source, and it always will be — no paywalls, no artificial limits, and no accounts. Sponsoring is completely optional and goes directly toward ongoing maintenance, platform bug fixes, and purchasing official desktop code-signing certificates for Windows and macOS.
+
+If OpenPost helps you in your development work, consider [sponsoring on GitHub](https://github.com/sponsors/azlanabdulla). Starring the [OpenPost repository](https://github.com/azlanabdulla/OpenPost), reporting bugs, and contributing improvements also help the project tremendously.
 
 ---
 
