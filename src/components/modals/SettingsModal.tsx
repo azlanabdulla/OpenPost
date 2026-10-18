@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from '../common/Modal';
-import { Clock, HardDrive, AlertCircle } from 'lucide-react';
+import { Clock, HardDrive, AlertCircle, KeyRound, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { useToastStore } from '../../stores/toastStore';
+import { keychain } from '../../utils/keychain';
 
 export interface AppSettings {
   defaultTimeoutMs: number;
@@ -50,8 +51,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
   const [largeResponseInput, setLargeResponseInput] = useState<string>('5');
   const [timeoutError, setTimeoutError] = useState<string | null>(null);
   const [sizeError, setSizeError] = useState<string | null>(null);
+  const [keychainAvailable, setKeychainAvailable] = useState<boolean>(true);
 
   const { addToast } = useToastStore();
+
+  useEffect(() => {
+    keychain.isAvailable().then(setKeychainAvailable);
+    return keychain.onAvailabilityChange(setKeychainAvailable);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -327,6 +334,32 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
               Reset Drafts
             </button>
           </div>
+        </div>
+
+        {/* OS Keychain Security Section */}
+        <div className="space-y-2 pt-2 border-t border-surface-border">
+          <h4 className="font-semibold text-surface-text flex items-center gap-1.5 text-xs">
+            <KeyRound className="w-3.5 h-3.5 text-brand-primary" />
+            Credential Storage & OS Keychain (OP-SEC-002)
+          </h4>
+
+          {keychainAvailable ? (
+            <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4" />
+                <span className="font-medium text-[11px]">Protected by OS Secure Keychain</span>
+              </div>
+              <span className="text-[10px] font-mono bg-emerald-500/20 px-2 py-0.5 rounded">Active</span>
+            </div>
+          ) : (
+            <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-500 flex items-start gap-2 text-xs">
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+              <div className="text-[11px] leading-snug">
+                <strong className="block font-medium">OS Secure Keychain Unavailable (OP-SEC-002)</strong>
+                OS Secure Keychain is unavailable on this system. Secrets will be stored in memory for this session only and will not persist across restarts.
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </Modal>

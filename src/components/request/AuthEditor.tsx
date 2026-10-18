@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AuthConfig, AuthType } from '../../types/http';
-import { Shield, Eye, EyeOff } from 'lucide-react';
+import { Shield, Eye, EyeOff, AlertTriangle } from 'lucide-react';
+import { keychain } from '../../utils/keychain';
 
 interface AuthEditorProps {
   auth: AuthConfig;
@@ -16,6 +17,12 @@ const AUTH_TYPES: { type: AuthType; label: string; desc: string }[] = [
 
 export const AuthEditor: React.FC<AuthEditorProps> = ({ auth, onChange }) => {
   const [showSecret, setShowSecret] = useState(false);
+  const [keychainAvailable, setKeychainAvailable] = useState<boolean>(true);
+
+  useEffect(() => {
+    keychain.isAvailable().then(setKeychainAvailable);
+    return keychain.onAvailabilityChange(setKeychainAvailable);
+  }, []);
 
   const handleTypeChange = (type: AuthType) => {
     onChange({
@@ -50,6 +57,16 @@ export const AuthEditor: React.FC<AuthEditorProps> = ({ auth, onChange }) => {
 
       {/* Auth Parameters Panel */}
       <div className="flex-1 min-h-[220px]">
+        {!keychainAvailable && auth.type !== 'none' && (
+          <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-500 flex items-start gap-2 text-xs mb-3">
+            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+            <div className="text-[11px] leading-snug">
+              <strong className="block font-medium">OS Secure Keychain Unavailable (OP-SEC-002)</strong>
+              Secrets will be stored in memory for this session only and will not persist across restarts.
+            </div>
+          </div>
+        )}
+
         {auth.type === 'none' && (
           <div className="flex flex-col items-center justify-center h-full text-center text-surface-muted py-12">
             <Shield className="w-8 h-8 text-surface-muted mb-2" />
