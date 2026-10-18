@@ -22,61 +22,86 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const previousActiveElement = useRef<HTMLElement | null>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
-    if (isOpen) {
-      previousActiveElement.current = document.activeElement as HTMLElement;
+    if (!isOpen) return;
 
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          e.preventDefault();
-          onClose();
+    // Capture element focused before modal opened
+    previousActiveElement.current = document.activeElement as HTMLElement;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onCloseRef.current();
+        return;
+      }
+
+      // Focus trap
+      if (e.key === 'Tab' && modalRef.current) {
+        const focusable = modalRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
         }
+      }
+    };
 
-        // Focus trap
-        if (e.key === 'Tab' && modalRef.current) {
-          const focusable = modalRef.current.querySelectorAll<HTMLElement>(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-          );
-          if (focusable.length === 0) return;
+    window.addEventListener('keydown', handleKeyDown);
 
-          const first = focusable[0];
-          const last = focusable[focusable.length - 1];
-
-          if (e.shiftKey) {
-            if (document.activeElement === first) {
-              e.preventDefault();
-              last.focus();
-            }
+    // Initial focus on open: ONLY run when opening and focus is NOT already inside modal
+    const frameId = requestAnimationFrame(() => {
+      if (modalRef.current) {
+        const active = document.activeElement;
+        // Never steal focus from an element already focused inside the modal
+        if (!modalRef.current.contains(active)) {
+          const autoFocusEl = modalRef.current.querySelector<HTMLElement>('[autofocus]');
+          if (autoFocusEl) {
+            autoFocusEl.focus();
           } else {
-            if (document.activeElement === last) {
-              e.preventDefault();
-              first.focus();
+            const firstInput = modalRef.current.querySelector<HTMLElement>(
+              'textarea:not([disabled]), input:not([disabled]), select:not([disabled])'
+            );
+            if (firstInput) {
+              firstInput.focus();
+            } else {
+              const firstFocusable = modalRef.current.querySelector<HTMLElement>(
+                'button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'
+              );
+              firstFocusable?.focus();
             }
           }
         }
-      };
+      }
+    });
 
-      window.addEventListener('keydown', handleKeyDown);
-
-      // Focus first element in modal
-      setTimeout(() => {
-        if (modalRef.current) {
-          const first = modalRef.current.querySelector<HTMLElement>(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-          );
-          first?.focus();
-        }
-      }, 50);
-
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-        if (previousActiveElement.current) {
-          previousActiveElement.current.focus();
-        }
-      };
-    }
-  }, [isOpen, onClose]);
+    return () => {
+      cancelAnimationFrame(frameId);
+      window.removeEventListener('keydown', handleKeyDown);
+      if (
+        previousActiveElement.current &&
+        typeof previousActiveElement.current.focus === 'function' &&
+        document.body.contains(previousActiveElement.current)
+      ) {
+        previousActiveElement.current.focus();
+      }
+    };
+  }, [isOpen]); // Strict: runs ONLY on open/close transition, never on parent re-renders
 
   if (!isOpen) return null;
 

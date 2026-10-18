@@ -13,7 +13,6 @@ import { ToastContainer } from './components/common/ToastContainer';
 import { executeHttpRequest, HttpExecutionError } from './utils/httpExecutor';
 import { normalizeAndValidateUrl } from './utils/url';
 import {
-  scanRequestForUndefinedVariables,
   mergeVariablesByPrecedence,
   resolveRequestVariables,
 } from './utils/variableResolver';
