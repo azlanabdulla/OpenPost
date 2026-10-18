@@ -8,18 +8,6 @@ const PNG_BYTES = Buffer.from(
 );
 
 const server = http.createServer((req, res) => {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', '*');
-  res.setHeader('Access-Control-Expose-Headers', '*');
-
-  if (req.method === 'OPTIONS') {
-    res.writeHead(204);
-    res.end();
-    return;
-  }
-
   const url = req.url || '/';
 
   if (url === '/cookies') {
@@ -68,7 +56,13 @@ const server = http.createServer((req, res) => {
   res.end(JSON.stringify({ error: 'Not Found' }));
 });
 
-const PORT = 9876;
-server.listen(PORT, '127.0.0.1', () => {
-  console.log(`Mock server running at http://127.0.0.1:${PORT}`);
+server.on('error', (err) => {
+  console.error('Mock server error:', err.message);
+  process.exit(1);
+});
+
+const requestedPort = process.env.PORT ? parseInt(process.env.PORT, 10) : 9876;
+server.listen(requestedPort, '127.0.0.1', () => {
+  const addr = server.address();
+  console.log(`Mock server running at http://127.0.0.1:${addr.port}`);
 });

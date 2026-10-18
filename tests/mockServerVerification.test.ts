@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import http from 'http';
+import net from 'net';
 import zlib from 'zlib';
 import { executeHttpRequest, parseCookieHeader } from '../src/utils/httpExecutor';
 import { createDefaultRequest } from '../src/stores/requestStore';
@@ -11,22 +12,12 @@ const PNG_BYTES = Buffer.from(
 );
 
 let serverInstance: http.Server | null = null;
+let baseUrl = '';
 
 describe('Real Mock Server Verification (OP-R2-005, 006, 007, 008)', () => {
   beforeAll(async () => {
-    await new Promise<void>((resolve) => {
+    await new Promise<void>((resolve, reject) => {
       const s = http.createServer((req, res) => {
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', '*');
-        res.setHeader('Access-Control-Expose-Headers', '*');
-
-        if (req.method === 'OPTIONS') {
-          res.writeHead(204);
-          res.end();
-          return;
-        }
-
         const url = req.url || '/';
 
         if (url === '/cookies') {
@@ -75,17 +66,14 @@ describe('Real Mock Server Verification (OP-R2-005, 006, 007, 008)', () => {
         res.end(JSON.stringify({ error: 'Not Found' }));
       });
 
-      s.on('error', (err: any) => {
-        if (err.code === 'EADDRINUSE') {
-          // Port already in use by local mock server, test can proceed
-          resolve();
-        } else {
-          resolve();
-        }
+      s.on('error', (err: Error) => {
+        reject(err);
       });
 
-      s.listen(9876, '127.0.0.1', () => {
+      s.listen(0, '127.0.0.1', () => {
         serverInstance = s;
+        const addr = s.address() as net.AddressInfo;
+        baseUrl = `http://127.0.0.1:${addr.port}`;
         resolve();
       });
     });
@@ -93,13 +81,15 @@ describe('Real Mock Server Verification (OP-R2-005, 006, 007, 008)', () => {
 
   afterAll(async () => {
     if (serverInstance) {
-      await new Promise<void>((resolve) => serverInstance!.close(() => resolve()));
+      await new Promise<void>((resolve, reject) => {
+        serverInstance!.close((err) => (err ? reject(err) : resolve()));
+      });
     }
   });
 
   it('verifies binary PNG image response is detected as binary and base64 encoded', async () => {
     const req = createDefaultRequest({
-      url: 'http://127.0.0.1:9876/image',
+      url: `${baseUrl}/image`,
       method: 'GET',
     });
 
@@ -114,7 +104,7 @@ describe('Real Mock Server Verification (OP-R2-005, 006, 007, 008)', () => {
 
   it('verifies gzip response is transparently decompressed', async () => {
     const req = createDefaultRequest({
-      url: 'http://127.0.0.1:9876/gzip',
+      url: `${baseUrl}/gzip`,
       method: 'GET',
     });
 
@@ -129,7 +119,7 @@ describe('Real Mock Server Verification (OP-R2-005, 006, 007, 008)', () => {
 
   it('verifies HTML response is retrieved for sandboxed iframe preview', async () => {
     const req = createDefaultRequest({
-      url: 'http://127.0.0.1:9876/html',
+      url: `${baseUrl}/html`,
       method: 'GET',
     });
 
