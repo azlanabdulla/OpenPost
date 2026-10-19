@@ -69,10 +69,38 @@ export function sanitizeUrl(url: string): string {
   }
 }
 
+/**
+ * Strips local filesystem paths (Windows drive letters, user directories, file:/// URIs)
+ * and sensitive credential patterns from diagnostic texts and stack traces.
+ */
+export function sanitizeDiagnosticsText(input: string): string {
+  if (!input) return '';
+
+  return input
+    // 1. Redact Windows drive paths (e.g. C:\Users\AZLAN\... or C:/Users/AZLAN/...)
+    .replace(/[a-zA-Z]:[\\/](?:Users|users)[\\/][^\\/:\s\)"']+[\\/](?:[^\s:\)"']+[\\/])*/gi, '<user_workspace>/')
+    .replace(/[a-zA-Z]:[\\/][^\s:\)"']+[\\/]/gi, '<local_path>/')
+    // 2. Redact Unix/macOS user paths (e.g. /home/user/... or /Users/user/...)
+    .replace(/\/(?:home|Users)\/[^/:\s\)"']+\/(?:[^\s:\)"']+\/)*/gi, '<user_workspace>/')
+    // 3. Redact file:/// URLs
+    .replace(/file:\/\/\/[^\s:\)"']+/gi, '<file_uri>')
+    // 4. Redact Bearer tokens and authorization headers
+    .replace(/Bearer\s+[a-zA-Z0-9_\-\.]+/gi, 'Bearer [REDACTED]')
+    .replace(/(authorization|token|secret|password|api[_-]?key)\s*[:=]\s*["']?[^"'\s,]+["']?/gi, '$1=[REDACTED]');
+}
+
 export function createSanitizedDiagnostics(error: Error, componentStack?: string): string {
   const timestamp = new Date().toISOString();
   const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : 'Node.js/Test';
   const platform = typeof navigator !== 'undefined' ? (navigator as any).userAgentData?.platform || navigator.platform : 'Unknown';
+
+  const cleanMessage = sanitizeDiagnosticsText(error.message || '');
+  const cleanStack = error.stack
+    ? sanitizeDiagnosticsText(error.stack.split('\n').slice(0, 8).join('\n'))
+    : 'No stack trace available';
+  const cleanComponentStack = componentStack
+    ? sanitizeDiagnosticsText(componentStack.trim())
+    : 'No component stack available';
 
   return `### OpenPost Crash Diagnostic Report
 - **Timestamp**: ${timestamp}
@@ -80,16 +108,16 @@ export function createSanitizedDiagnostics(error: Error, componentStack?: string
 - **Platform**: ${platform || 'Desktop/Node'}
 - **User Agent**: ${userAgent}
 - **Error Name**: ${error.name}
-- **Error Message**: ${error.message}
+- **Error Message**: ${cleanMessage}
 
 #### Stack Trace
 \`\`\`
-${error.stack ? error.stack.split('\n').slice(0, 8).join('\n') : 'No stack trace available'}
+${cleanStack}
 \`\`\`
 
 #### Component Hierarchy
 \`\`\`
-${componentStack ? componentStack.trim() : 'No component stack available'}
+${cleanComponentStack}
 \`\`\`
 `;
 }

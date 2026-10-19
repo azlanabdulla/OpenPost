@@ -184,9 +184,17 @@ export async function executeHttpRequest(
       try {
         const parsed = JSON.parse(rawMsg);
         if (parsed.code) {
+          let title = 'Network Error';
+          if (parsed.code === 'OP-SSL-001') title = 'SSL Certificate Error';
+          else if (parsed.code === 'OP-NET-001') title = 'DNS Resolution Failed';
+          else if (parsed.code === 'OP-NET-002') title = 'Connection Refused';
+          else if (parsed.code === 'OP-NET-003') title = 'Request Timed Out';
+          else if (parsed.code === 'OP-NET-004') title = 'Request Cancelled';
+          else if (parsed.code === 'OP-NET-005') title = 'Too Many Redirects';
+
           const structuredError: HttpExecutionError = {
             code: parsed.code,
-            title: parsed.code === 'OP-SSL-001' ? 'SSL Certificate Error' : 'Network Error',
+            title,
             message: parsed.message || 'Network request failed',
             technicalDetails: parsed.technicalDetails || rawMsg,
             isSslError: !!parsed.isSslError,

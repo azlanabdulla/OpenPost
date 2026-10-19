@@ -64,6 +64,8 @@ pub async fn execute_request(
 
         let (code, message, is_ssl) = if e.is_timeout() {
             ("OP-NET-003", format!("Request timed out after {}ms", timeout_ms), false)
+        } else if e.is_redirect() || lower.contains("redirect") || lower.contains("too many redirects") {
+            ("OP-NET-005", "Too many redirects encountered. Potential redirect loop detected.".to_string(), false)
         } else if lower.contains("cert") || lower.contains("ssl") || lower.contains("tls") || lower.contains("handshake") {
             ("OP-SSL-001", "SSL/TLS certificate verification failed. The certificate may be self-signed, expired, or invalid.".to_string(), true)
         } else if lower.contains("dns") || lower.contains("resolve") || lower.contains("failed to lookup") || lower.contains("name resolution") {

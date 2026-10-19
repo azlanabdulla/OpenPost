@@ -19,13 +19,41 @@ describe('Canonical Links Configuration & URL Allowlist', () => {
     }
   });
 
-  it('rejects malicious, look-alike, downgraded, or untrusted URLs', () => {
+  it('allows query parameters on canonical issues/new for pre-filled crash reports', () => {
+    const validReportUrls = [
+      'https://github.com/azlanabdulla/OpenPost/issues/new?title=Crash&body=Diagnostics',
+      'https://github.com/azlanabdulla/OpenPost/issues/new?title=%5BCrash%5D%20Error&body=Report',
+      'https://github.com/azlanabdulla/OpenPost/issues/new?labels=bug',
+    ];
+
+    for (const url of validReportUrls) {
+      expect(isAllowlistedUrl(url)).toBe(true);
+    }
+  });
+
+  it('rejects query parameters or hash on all other canonical links', () => {
+    const invalidQueryUrls = [
+      'https://github.com/azlanabdulla/OpenPost?evil=1',
+      'https://github.com/azlanabdulla/OpenPost/releases?download=evil',
+      'https://github.com/sponsors/azlanabdulla?ref=untrusted',
+      'https://github.com/azlanabdulla/OpenPost#malicious-hash',
+    ];
+
+    for (const url of invalidQueryUrls) {
+      expect(isAllowlistedUrl(url)).toBe(false);
+    }
+  });
+
+  it('rejects malicious, look-alike, downgraded, or untrusted URLs even with query strings', () => {
     const invalidUrls = [
       'https://github.com.evil.com/azlanabdulla/OpenPost',
+      'https://github.com.evil.com/azlanabdulla/OpenPost/issues/new?title=Spoof',
       'https://github.com/azlanabdulla/OpenPost-fake',
+      'https://github.com/azlanabdulla/OpenPost-fake/issues/new?title=Spoof',
       'https://github.com/azlanabdulla/OtherRepo',
+      'https://github.com/azlanabdulla/OpenPost/issues/new/extra?title=Spoof',
       'https://github.com/openpost/openpost',
-      'http://github.com/azlanabdulla/OpenPost', // HTTP downgrade
+      'http://github.com/azlanabdulla/OpenPost/issues/new?title=Insecure', // HTTP downgrade
       'javascript:alert("XSS")',
       'file:///C:/Windows/System32/calc.exe',
       'file:///etc/passwd',
@@ -41,6 +69,26 @@ describe('Canonical Links Configuration & URL Allowlist', () => {
     for (const badUrl of invalidUrls) {
       expect(isAllowlistedUrl(badUrl)).toBe(false);
     }
+  });
+});
+
+describe('Diagnostic Sanitizer Security (Local Paths & Secrets)', () => {
+  it('strips Windows local paths, user directories, file URIs, and secret tokens from diagnostics', async () => {
+    const { createSanitizedDiagnostics } = await import('../src/utils/sanitizer');
+    const fakeError = new Error('Test failure with Bearer eyJhbGciOiJIUzI1NiJ9.token123 and C:\\Users\\AZLAN\\Desktop\\secrets.txt');
+    fakeError.stack = `Error: Test failure\n    at Object.<anonymous> (C:\\Users\\AZLAN\\Desktop\\PROJECTS\\OpenPost\\src\\test.ts:12:3)\n    at file:///C:/Users/AZLAN/app.js:45:6\n    at /home/azlan/repo/src/index.js:7:8`;
+
+    const report = createSanitizedDiagnostics(fakeError, '    in Component (at C:\\Users\\AZLAN\\Desktop\\PROJECTS\\OpenPost\\src\\App.tsx:90)');
+
+    // Ensure no local paths leak
+    expect(report).not.toContain('AZLAN');
+    expect(report).not.toContain('C:\\Users\\');
+    expect(report).not.toContain('file:///C:');
+    expect(report).not.toContain('/home/azlan');
+
+    // Ensure no secret tokens leak
+    expect(report).not.toContain('eyJhbGciOiJIUzI1NiJ9.token123');
+    expect(report).toContain('Bearer [REDACTED]');
   });
 });
 

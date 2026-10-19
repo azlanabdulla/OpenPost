@@ -50,6 +50,15 @@ export const App: React.FC = () => {
     (window as unknown as { useRequestStore: unknown }).useRequestStore = useRequestStore;
   }
 
+  const [testCrash, setTestCrash] = useState(false);
+  useEffect(() => {
+    (window as unknown as { __triggerTestCrash?: () => void }).__triggerTestCrash = () => setTestCrash(true);
+  }, []);
+
+  if (testCrash) {
+    throw new Error('Simulated test crash with secret Bearer eyJhbGciOiJIUzI1NiJ9.test and path C:\\Users\\AZLAN\\test');
+  }
+
   useEffect(() => {
     initTheme();
   }, [initTheme]);

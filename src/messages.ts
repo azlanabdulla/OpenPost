@@ -36,6 +36,13 @@ export const APP_MESSAGES = {
     likelyCause: 'You clicked Cancel or pressed the cancel shortcut before the response completed.',
     actionText: 'Click Send or press Ctrl+Enter to re-send the request.',
   },
+  NET_REDIRECT_LOOP: {
+    code: 'OP-NET-005',
+    title: 'Too Many Redirects',
+    message: 'The request exceeded the maximum number of redirects or encountered a redirect loop.',
+    likelyCause: 'The server redirected in an infinite loop or exceeded the maximum allowed hops.',
+    actionText: 'Inspect the URL or disable "Follow Redirects" in Settings.',
+  },
   NET_GENERIC: {
     code: 'OP-NET-999',
     title: 'Network Communication Error',

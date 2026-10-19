@@ -37,11 +37,23 @@ export function isAllowlistedUrl(rawUrl: string): boolean {
 
   try {
     const parsed = new URL(rawUrl.trim());
-    if (parsed.protocol !== 'https:') {
+    if (parsed.protocol !== 'https:' || parsed.hostname !== 'github.com') {
       return false;
     }
-    // Must strictly match one of the canonical URLs without extra params or path traversal
-    return ALLOWLISTED_EXTERNAL_URLS.includes(parsed.href);
+
+    // 1. Allow the canonical new issue endpoint with any query parameters (e.g. pre-filled diagnostics)
+    if (parsed.pathname === '/azlanabdulla/OpenPost/issues/new') {
+      return true;
+    }
+
+    // 2. For all other canonical URLs, require exact match (no extra query params, path traversal, or hash)
+    const baseCanonical = `${parsed.origin}${parsed.pathname}`;
+    if (!ALLOWLISTED_EXTERNAL_URLS.includes(baseCanonical)) {
+      return false;
+    }
+
+    // Disallow arbitrary query strings or hash on other canonical links
+    return !parsed.search && !parsed.hash;
   } catch {
     return false;
   }
