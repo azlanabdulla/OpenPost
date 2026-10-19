@@ -17,6 +17,10 @@ const { spawn, execSync } = require('child_process');
 const PORT = 9786;
 
 function resolveExePath() {
+  const exeArgIdx = process.argv.indexOf('--exe');
+  if (exeArgIdx !== -1 && process.argv[exeArgIdx + 1] && fs.existsSync(process.argv[exeArgIdx + 1])) {
+    return process.argv[exeArgIdx + 1];
+  }
   if (process.env.OPENPOST_EXE && fs.existsSync(process.env.OPENPOST_EXE)) {
     return process.env.OPENPOST_EXE;
   }

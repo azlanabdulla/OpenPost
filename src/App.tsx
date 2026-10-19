@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useRequestStore } from './stores/requestStore';
+import { useRequestStore, checkExternalDraftChanges } from './stores/requestStore';
 import { useToastStore } from './stores/toastStore';
 import { Header } from './components/layout/Header';
 import { Sidebar } from './components/layout/Sidebar';
@@ -59,6 +59,14 @@ export const App: React.FC = () => {
   useEffect(() => {
     initTheme();
   }, [initTheme]);
+
+  useEffect(() => {
+    const handleFocus = () => {
+      checkExternalDraftChanges();
+    };
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, []);
 
   const {
     tabs,
