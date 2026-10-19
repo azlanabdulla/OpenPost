@@ -105,5 +105,5 @@ jobs:
         with:
           files: release_assets/*
           draft: false
-          prerelease: false
+          prerelease: true
           generate_release_notes: true

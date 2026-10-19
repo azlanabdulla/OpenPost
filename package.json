@@ -20,6 +20,7 @@
     "tauri": "tauri",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "node scripts/run_real_desktop_e2e.cjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

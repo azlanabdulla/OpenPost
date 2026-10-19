@@ -1,0 +1,33 @@
+version: 2
+updates:
+  # Maintain Node.js / npm dependencies
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '06:00'
+    open-pull-requests-limit: 10
+    groups:
+      dev-dependencies:
+        patterns:
+          - '@types/*'
+          - 'vite*'
+          - 'vitest*'
+          - 'tailwindcss*'
+          - 'postcss*'
+          - 'autoprefixer*'
+
+  # Maintain Rust / Cargo dependencies
+  - package-ecosystem: 'cargo'
+    directory: '/src-tauri'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '06:00'
+    open-pull-requests-limit: 10
+    groups:
+      tauri-plugins:
+        patterns:
+          - 'tauri*'
+          - '@tauri-apps/*'

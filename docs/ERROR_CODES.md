@@ -79,14 +79,15 @@ All error and warning messages in OpenPost use standardized, searchable error co
 
 ---
 
-## Storage & Workspace Safety (`OP-SAFE-xxx`)
+## Storage & Workspace Safety (`OP-SAFE-xxx` & `OP-FS-xxx`)
 
 | Code | Title | Description | Recommended User Action |
 | :--- | :--- | :--- | :--- |
 | `OP-SAFE-001` | **Unsaved Tab Discard Warning** | Attempted to close a modified tab with unsaved edits. | Click "Save" to keep changes, "Don't Save" to discard, or "Cancel" to return. |
-| `OP-SAFE-002` | **Corrupted Draft Recovered** | Primary drafts file was corrupt and recovered from rolling `.bak` backup. | Verified workspace state restored cleanly without user intervention. |
+| `OP-SAFE-002` | **Storage Write Failure / Corrupted Draft Recovery** | Disk write failed or draft was corrupt and recovered from `.bak` backup. In-memory tabs preserved. | Check disk space/permissions. All active tabs remain safe in memory. |
 | `OP-SAFE-003` | **Undo Notification** | A tab or history item was removed with an interactive undo grace period. | Click "Undo" toast action to immediately restore the closed item. |
 | `OP-SAFE-004` | **File Changed on Disk** | Drafts file was externally updated by another process. | Click "Reload from Disk" toast prompt to refresh workspace safely. |
+| `OP-FS-001` | **Read-Only Directory / Access Denied** | Storage folder or draft file is read-only or lacks write permission. | Clear read-only attribute or make destination writable. In-memory tabs preserved. |
 
 ---
 

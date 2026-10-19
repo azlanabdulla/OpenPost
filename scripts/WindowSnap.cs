@@ -53,8 +53,7 @@ public class WindowSnap {
         if (hWnd == IntPtr.Zero) return false;
 
         ShowWindow(hWnd, 9); // SW_RESTORE
-        MoveWindow(hWnd, 40, 40, 1366, 850, true);
-        System.Threading.Thread.Sleep(200);
+        System.Threading.Thread.Sleep(500);
         SetForegroundWindow(hWnd);
 
         RECT r;

@@ -13,10 +13,10 @@
     "windows": [
       {
         "title": "OpenPost — The Free, Open-Source API Client",
-        "width": 1280,
-        "height": 840,
+        "width": 1080,
+        "height": 640,
         "minWidth": 800,
-        "minHeight": 600,
+        "minHeight": 500,
         "resizable": true,
         "fullscreen": false
       }

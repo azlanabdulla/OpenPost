@@ -2,9 +2,9 @@
 
 ## Overview
 - **Binary Tested**: `src-tauri/target/debug/openpost.exe`
-- **PID(s) Monitored**: `30328`
+- **PID(s) Monitored**: `27888`
 - **Verification Method**: Windows OS kernel TCP connection table query via `Get-NetTCPConnection -OwningProcess <pid>` + Chrome DevTools Protocol (CDP) network monitoring.
-- **Timestamp**: 2026-10-19T05:10:24.414Z
+- **Timestamp**: 2026-10-19T07:39:46.028Z
 
 ---
 

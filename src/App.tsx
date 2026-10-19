@@ -45,9 +45,13 @@ export const App: React.FC = () => {
 
   const { initTheme } = useThemeStore();
 
-  if (typeof window !== 'undefined' && (import.meta as unknown as { env?: { DEV?: boolean } }).env?.DEV) {
-    (window as unknown as { useHistoryStore: unknown }).useHistoryStore = useHistoryStore;
-    (window as unknown as { useRequestStore: unknown }).useRequestStore = useRequestStore;
+  if (typeof window !== 'undefined') {
+    (window as unknown as { __OPENPOST_STORES__: unknown }).__OPENPOST_STORES__ = {
+      useToastStore,
+      useRequestStore,
+      useHistoryStore,
+      useThemeStore,
+    };
   }
 
   const [testCrash, setTestCrash] = useState(false);
@@ -56,7 +60,7 @@ export const App: React.FC = () => {
   }, []);
 
   if (testCrash) {
-    throw new Error('Simulated test crash with secret Bearer eyJhbGciOiJIUzI1NiJ9.test and path C:\\Users\\AZLAN\\test');
+    throw new Error('Simulated test crash with secret Bearer eyJhbGciOiJIUzI1NiJ9.test and path C:\\Users\\Developer\\test');
   }
 
   useEffect(() => {

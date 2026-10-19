@@ -185,6 +185,13 @@ export const APP_MESSAGES = {
     likelyCause: 'Another OpenPost instance or file editor modified the drafts file.',
     actionText: 'Click Reload from Disk to refresh state safely.',
   },
+  FS_READONLY: {
+    code: 'OP-FS-001',
+    title: 'Read-Only Storage Detected',
+    message: 'Destination folder or drafts file has read-only permissions.',
+    likelyCause: 'Folder is locked, mounted read-only, or lacks write permissions.',
+    actionText: 'Make folder writable or save to an alternate location. Tabs remain safe in memory.',
+  },
 
   // Security & Keychain
   SEC_KEYCHAIN_UNAVAILABLE: {

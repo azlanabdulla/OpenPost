@@ -198,6 +198,7 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
             </button>
             <button
               type="button"
+              data-testid="import-process-btn"
               onClick={handleProcessImport}
               className="px-4 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-medium text-xs shadow-sm transition cursor-pointer"
             >
@@ -339,6 +340,7 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
           <div className="flex border-b border-surface-border">
             <button
               type="button"
+              data-testid="import-tab-curl"
               onClick={() => {
                 setImportType('curl');
                 setErrorMessage(null);
@@ -355,6 +357,7 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
 
             <button
               type="button"
+              data-testid="import-tab-postman"
               onClick={() => {
                 setImportType('postman');
                 setErrorMessage(null);
@@ -410,6 +413,7 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose }) => 
                   Or paste raw JSON content
                 </label>
                 <textarea
+                  data-testid="import-json-textarea"
                   value={inputContent}
                   onChange={(e) => setInputContent(e.target.value)}
                   placeholder="Paste collection JSON here..."

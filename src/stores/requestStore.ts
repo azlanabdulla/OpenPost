@@ -67,10 +67,13 @@ function saveDrafts(tabs: TabItem[], activeTabId: string) {
             })
             .catch((diskErr) => {
               console.error('Tauri disk write failure:', diskErr);
+              const isReadOnly = /access is denied|permission denied|read-only/i.test(String(diskErr));
               useToastStore.getState().addToast({
                 type: 'error',
-                title: 'Disk Write Failed (OP-SAFE-002)',
-                message: `Failed to commit drafts to disk: ${diskErr}. In-memory state preserved.`,
+                title: isReadOnly ? 'Read-Only Storage Detected (OP-FS-001)' : 'Disk Write Failed (OP-SAFE-002)',
+                message: isReadOnly
+                  ? `Directory or draft file is read-only (${diskErr}). In-memory workspace preserved.`
+                  : `Failed to commit drafts to disk: ${diskErr}. In-memory state preserved.`,
                 durationMs: 8000,
               });
             });
@@ -99,7 +102,7 @@ function loadDrafts(): { tabs: TabItem[]; activeTabId: string } | null {
           parsed = JSON.parse(bakRaw);
           useToastStore.getState().addToast({
             type: 'warning',
-            title: 'Corrupted Draft Recovered',
+            title: 'Corrupted Draft Recovered (OP-SAFE-002)',
             message: 'Detected corrupted draft file. Restored from previous safe backup.',
             durationMs: 7000,
           });
@@ -110,7 +113,7 @@ function loadDrafts(): { tabs: TabItem[]; activeTabId: string } | null {
       if (!parsed) {
         useToastStore.getState().addToast({
           type: 'error',
-          title: 'Corrupted Draft Detected',
+          title: 'Corrupted Draft Detected (OP-SAFE-002)',
           message: 'Saved workspace drafts were corrupted and could not be parsed. Initialized clean workspace.',
           durationMs: 8000,
         });

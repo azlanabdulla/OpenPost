@@ -16,6 +16,10 @@ export const WelcomeModal: React.FC = () => {
     } catch {
       // Ignore storage access errors
     }
+
+    const handleOpen = () => setIsOpen(true);
+    window.addEventListener('openpost-open-welcome', handleOpen);
+    return () => window.removeEventListener('openpost-open-welcome', handleOpen);
   }, []);
 
   const handleClose = () => {

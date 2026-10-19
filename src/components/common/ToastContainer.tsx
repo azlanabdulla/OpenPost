@@ -11,7 +11,7 @@ export const ToastContainer: React.FC = () => {
     <div
       role="region"
       aria-label="Notifications"
-      className="fixed bottom-9 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"
+      className="fixed top-14 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 max-w-lg w-full px-4 pointer-events-none"
     >
       {toasts.map((toast: ToastItem) => {
         let borderClass = 'border-brand-500/30';
@@ -38,7 +38,7 @@ export const ToastContainer: React.FC = () => {
             key={toast.id}
             role="status"
             aria-live="polite"
-            className={`pointer-events-auto flex items-start gap-3 p-3 rounded-xl border ${borderClass} ${bgClass} shadow-xl shadow-black/10 dark:shadow-black/40 text-surface-text transition-all animate-in slide-in-from-bottom-2 duration-200 select-text`}
+            className={`pointer-events-auto flex items-start gap-3 p-3 rounded-xl border ${borderClass} ${bgClass} shadow-xl shadow-black/10 dark:shadow-black/40 text-surface-text transition-all animate-in slide-in-from-top-2 duration-200 select-text`}
           >
             <IconComponent className={`w-4 h-4 mt-0.5 shrink-0 ${iconColor}`} />
             <div className="flex-1 min-w-0">
