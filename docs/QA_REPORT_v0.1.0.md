@@ -6,7 +6,7 @@
 **Host Environment**: Windows 11 MSVC (`x86_64-pc-windows-msvc`), 125% native display scaling  
 **Desktop Target**: `src-tauri/target/debug/openpost.exe` & `C:\Users\AZLAN\AppData\Local\OpenPost\openpost.exe` (Tauri v2 + WebView2)  
 **CI Pipeline Status**: ✅ **100% GREEN (3/3 JOBS PASSED)**  
-**CI Run URL**: [https://github.com/azlanabdulla/OpenPost/actions/runs/39222843758](https://github.com/azlanabdulla/OpenPost/actions/runs/39222843758)  
+**CI Run URL**: [https://github.com/azlanabdulla/OpenPost/actions/runs/39230116313](https://github.com/azlanabdulla/OpenPost/actions/runs/39230116313)  
 **Release Gate Status**: ✅ **READY FOR RELEASE**  
 *(Note: Release tag `v0.1.0` is strictly withheld pending explicit user command "release")*
 
@@ -18,7 +18,7 @@ Every checklist item, user correction, and edge case across all pre-release phas
 
 | Quality Gate / Verification | Environment | Status | Evidence / Artifact |
 | :--- | :---: | :---: | :--- |
-| **GitHub Actions CI Pipeline** | CI (Linux + Windows) | ✅ **PASSED** | [Run 39222843758](https://github.com/azlanabdulla/OpenPost/actions/runs/39222843758) (Ubuntu Linux, Windows MSVC, Frontend) |
+| **GitHub Actions CI Pipeline** | CI (Linux + Windows) | ✅ **PASSED** | [Run 39230116313](https://github.com/azlanabdulla/OpenPost/actions/runs/39230116313) (Ubuntu Linux, Windows MSVC, Frontend) |
 | **Vitest Unit & Component Suite** | `unit test` | ✅ **PASSED** | 33 test files, 160/160 tests passed (`npm test`) |
 | **Desktop Workflow Integration Suite** | `integration test` | ✅ **PASSED** | React Testing Library DOM integration (`tests/desktopWorkflowE2E.test.tsx`) |
 | **Real Desktop E2E Suite (Installed Release Build)** | `desktop` | ✅ **PASSED** | 2 real E2E runs against `openpost.exe` via CDP (`npm run test:e2e`) |
