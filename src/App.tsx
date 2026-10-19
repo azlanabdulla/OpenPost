@@ -45,18 +45,11 @@ export const App: React.FC = () => {
 
   const { initTheme } = useThemeStore();
 
-  if (typeof window !== 'undefined') {
-    (window as unknown as { __OPENPOST_STORES__: unknown }).__OPENPOST_STORES__ = {
-      useToastStore,
-      useRequestStore,
-      useHistoryStore,
-      useThemeStore,
-    };
-  }
-
   const [testCrash, setTestCrash] = useState(false);
   useEffect(() => {
-    (window as unknown as { __triggerTestCrash?: () => void }).__triggerTestCrash = () => setTestCrash(true);
+    if (import.meta.env.DEV) {
+      (window as unknown as { __triggerTestCrash?: () => void }).__triggerTestCrash = () => setTestCrash(true);
+    }
   }, []);
 
   if (testCrash) {

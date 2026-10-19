@@ -67,8 +67,8 @@ jobs:
       - name: Verify Rust Formatting
         run: cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
 
-      - name: Cargo Check
-        run: cargo check --manifest-path src-tauri/Cargo.toml
+      - name: Cargo Check (Locked)
+        run: cargo check --locked --manifest-path src-tauri/Cargo.toml
 
       - name: Cargo Clippy
         run: cargo clippy --manifest-path src-tauri/Cargo.toml -- -D warnings
@@ -108,8 +108,8 @@ jobs:
       - name: Verify Rust Formatting
         run: cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
 
-      - name: Cargo Check
-        run: cargo check --manifest-path src-tauri/Cargo.toml
+      - name: Cargo Check (Locked)
+        run: cargo check --locked --manifest-path src-tauri/Cargo.toml
 
       - name: Cargo Clippy
         run: cargo clippy --manifest-path src-tauri/Cargo.toml -- -D warnings

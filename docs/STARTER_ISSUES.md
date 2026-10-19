@@ -1,6 +1,6 @@
 # Good First Issues for New Contributors
 
-Welcome to OpenPost! If you are looking to make your first open-source contribution, here are five realistic, well-scoped issues ready for implementation.
+Welcome to OpenPost! If you are looking to make your first open-source contribution, here are ten realistic, well-scoped issues ready for implementation.
 
 ---
 
@@ -66,3 +66,69 @@ Welcome to OpenPost! If you are looking to make your first open-source contribut
   - Small text button "Clear" next to Headers count badge.
   - Clicking it clears all non-default user headers.
   - Dispatches an undo toast via `useToastStore` allowing the user to restore previous headers within 8 seconds.
+
+---
+
+### Issue 6: Response Header Search Filter in Headers Table
+- **Category**: Inspection & Search
+- **Files**:
+  - `src/components/response/ResponseViewer.tsx`
+- **Description**: When inspecting responses with 30+ HTTP headers (CORS headers, security policies, cache tags), finding a specific header requires manual scrolling. Add an inline text filter in the Headers tab.
+- **Acceptance Criteria**:
+  - Text search input at the top of the response Headers table.
+  - Dynamically filters header rows by case-insensitive name or value match.
+  - Displays "No matching headers found" when filter has 0 matches.
+
+---
+
+### Issue 7: Copy as cURL Single-Quote / PowerShell Escaping Option
+- **Category**: Developer Productivity
+- **Files**:
+  - `src/utils/curlParser.ts`
+  - `src/components/request/UrlBar.tsx`
+- **Description**: Currently "Copy as cURL" formats arguments using standard POSIX single-quotes. On Windows PowerShell, multi-line backticks or standard double quotes are often preferred.
+- **Acceptance Criteria**:
+  - Dropdown or context menu option on "Copy as cURL": "Copy for Bash / POSIX" vs "Copy for PowerShell".
+  - Properly escapes quotes and special characters for PowerShell without breaking POSIX behavior.
+  - Add unit test in `tests/curlParser.test.ts`.
+
+---
+
+### Issue 8: Environment Variable Preview Hover Card in URL Bar
+- **Category**: Developer Ergonomics
+- **Files**:
+  - `src/components/request/UrlBar.tsx`
+  - `src/stores/environmentStore.ts`
+- **Description**: When typing `{{baseUrl}}` or `{{authToken}}` in the URL bar, hovering over the variable token should display a subtle tooltip showing the currently active resolved value or a warning if undefined.
+- **Acceptance Criteria**:
+  - Shows resolved variable value on hover.
+  - If variable is secret, displays `••••••••` with a reveal button.
+  - If undefined, highlights in amber with "Undefined variable" hint.
+
+---
+
+### Issue 9: Response Time Color Coding
+- **Category**: Visual Polish
+- **Files**:
+  - `src/components/response/ResponseViewer.tsx`
+  - `src/components/layout/Footer.tsx`
+- **Description**: Color-code the duration badge in the response viewer and footer according to performance latency thresholds:
+  - `< 200 ms`: Green (`emerald-400`)
+  - `200 ms - 1000 ms`: Amber (`amber-400`)
+  - `> 1000 ms`: Rose / Red (`rose-400`)
+- **Acceptance Criteria**:
+  - Color updates dynamically based on `response.durationMs`.
+  - Accessible in both Dark and Light themes with WCAG AA contrast.
+
+---
+
+### Issue 10: Export History to HAR (HTTP Archive) Format
+- **Category**: Interoperability
+- **Files**:
+  - `src/components/modals/ExportModal.tsx`
+  - `src/stores/historyStore.ts`
+- **Description**: Allow exporting recent history records to standard HTTP Archive (`.har`) format for import into browser DevTools or performance profiling tools.
+- **Acceptance Criteria**:
+  - Add "HAR 1.2" format option in the Export Modal.
+  - Masks secret tokens and credentials unless user explicitly unchecks "Exclude Secrets".
+  - Validated against the official HAR 1.2 JSON schema specification.

@@ -9,8 +9,8 @@ import { useRequestStore } from './stores/requestStore';
 import { useHistoryStore } from './stores/historyStore';
 import { useThemeStore } from './stores/themeStore';
 
-if (typeof window !== 'undefined') {
-  (window as unknown as { __OPENPOST_STORES__: unknown }).__OPENPOST_STORES__ = {
+if (import.meta.env.DEV && typeof window !== 'undefined') {
+  (window as unknown as { __OPENPOST_STORES__?: unknown }).__OPENPOST_STORES__ = {
     useToastStore,
     useRequestStore,
     useHistoryStore,
