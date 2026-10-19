@@ -13,6 +13,8 @@ This document outlines the architectural roadmap and upcoming feature iterations
 - [ ] **Tailwind CSS 3 -> 4 Migration**:
   - **Technical Rationale**: OpenPost currently runs on `tailwindcss@3.4.17` with PostCSS and custom HSL surface tokens (`surface-base`, `surface-card`, `surface-panel`, `brand-primary`). Tailwind v4 replaces JavaScript configuration files with CSS `@theme` directives and Vite native compiler integration. Staying on v3.4 for v0.1.0 ensured zero breaking UI changes and rock-solid cross-platform stability. The v4 migration is slated for v0.2.0 once community Vite plugin edge cases settle.
   - **Migration Plan**: Convert `tailwind.config.js` design tokens to `@theme` directives in `src/index.css`, update `@tailwindcss/vite`, and run comprehensive visual regression tests against the 20-screen theme matrix.
+- [ ] **Cross-Platform Keychain Storage (`keyring` crate)**:
+  - **Technical Rationale**: OpenPost v0.1.0 persists secrets across restarts on Windows via native Win32 Credential Manager (`advapi32.dll`), while macOS and Linux keep secrets securely in memory for the active session to avoid plain-text disk storage (`OP-SEC-002`). In v0.2.0, migrate backend credential storage to the maintained Rust `keyring` crate to support native macOS Keychain (Security framework) and Linux Secret Service (DBus / GNOME Keyring / KWallet) with seamless persistence across all three platforms.
 - [ ] **Multi-Format Code Generation**:
   - Export active request to executable snippets: `cURL`, `JavaScript (fetch / axios)`, `Python (requests / httpx)`, `Go (net/http)`, `Rust (reqwest)`, and `PHP (cURL)`.
 - [ ] **Response Search & JSON Path Filtering**:

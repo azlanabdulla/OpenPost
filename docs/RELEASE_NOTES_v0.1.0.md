@@ -84,9 +84,9 @@ sha256sum -c OpenPost_0.1.0_amd64.AppImage.sha256
 
 ## Known Limitations
 
+- **Secret Persistence Across Restarts**: Sensitive credentials (bearer tokens, Basic Auth passwords, API keys) persist across application restarts on **Windows only** (backed by native Windows Credential Manager). On **macOS and Linux**, credentials remain securely held in memory for the active session and do not persist across restarts (displaying the amber `OP-SEC-002` notification). Migration to the cross-platform `keyring` crate is slated for v0.2.0.
 - **WebSocket / GraphQL**: Currently specialized for REST/HTTP requests. Dedicated WebSocket interactive inspectors and GraphQL schema explorers are planned in the roadmap.
 - **Sandboxed JavaScript Scripts**: Pre-request and test assertions from Postman collections are skipped because OpenPost runs securely without an embedded arbitrary JS sandbox runtime.
-- **OS Keychain Fallback**: On systems where OS keychain services are denied or unavailable (e.g. headless or restricted policy environments), credentials fall back gracefully to secure in-memory storage for the active session.
 
 ---
 

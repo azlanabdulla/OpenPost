@@ -193,7 +193,7 @@ Global Variables   (Lowest Precedence)
 
 ### 2. Authentication & Auth Inheritance
 - **Inherit from Parent**: Set a request's auth type to **Inherit Auth**. OpenPost automatically inherits the Bearer Token, Basic Auth, or API Key configured on its enclosing collection or folder.
-- **Credential Masking**: Secrets are masked on screen and automatically excluded from workspace exports by default.
+- **Credential Masking & Storage**: Secrets are masked on screen and automatically excluded from workspace exports by default. Secrets persist across application restarts on **Windows only** (via native Windows Credential Manager). On **macOS and Linux**, credentials remain securely held in memory for the active session and do not persist across restarts (displaying the `OP-SEC-002` notification). Seamless cross-platform persistence via the `keyring` crate is planned on the roadmap.
 
 ### 3. Request History & Secret Scrubbing
 - **Automatic History**: All executed requests are logged into your local SQLite database (`history.db`).
@@ -238,6 +238,14 @@ All configurations, persistent history, and drafts are stored locally:
 
 ---
 
+## Known Limitations
+
+- **Secret Persistence Across Restarts**: Sensitive credentials (auth tokens, passwords, API keys) persist across application restarts on **Windows only** (backed by native Windows Credential Manager). On **macOS and Linux**, secrets are held securely in memory for the duration of the active session and do not persist across restarts (displaying the amber `OP-SEC-002` notification). Migration to the cross-platform `keyring` crate (supporting macOS Keychain and Linux Secret Service) is scheduled for v0.2.0.
+- **WebSocket & GraphQL**: OpenPost v0.1.0 is specialized for REST/HTTP APIs. Interactive WebSocket inspectors and GraphQL schema discovery are planned for v0.3.0.
+- **Pre-request & Test Assertion Scripts**: Postman JavaScript scripts are omitted because OpenPost executes securely without an embedded arbitrary JavaScript sandbox runtime.
+
+---
+
 ## Comparison
 
 | Capability | OpenPost | Traditional Commercial Clients |
@@ -245,7 +253,7 @@ All configurations, persistent history, and drafts are stored locally:
 | **Account Required** | ❌ **Never (No sign-up)** | ⚠️ Mandatory account & login |
 | **Request & Collection Limits** | ❌ **Unlimited** | ⚠️ Artificial tier restrictions |
 | **Cloud Synchronization** | ❌ **100% Local-first** | ⚠️ Forced cloud syncing of workspaces |
-| **Secret Security** | 🔒 **OS Keychain / Sanitized** | ⚠️ Synced to external cloud servers |
+| **Secret Security** | 🔒 **WinCred / In-Memory (macOS/Linux)** | ⚠️ Synced to external cloud servers |
 | **Telemetry & Trackers** | ❌ **Zero telemetry** | ⚠️ Extensive behavioral tracking |
 | **CORS Limitations** | ❌ **Zero CORS (Rust backend)** | ❌ None |
 | **Lightweight Desktop Core** | ⚡ **Tauri 2 (~15MB RAM idle)** | ⚠️ Electron (often 300MB+ RAM) |
