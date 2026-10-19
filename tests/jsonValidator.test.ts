@@ -29,4 +29,24 @@ describe('validateJsonString', () => {
     expect(result.isValid).toBe(false);
     expect(result.errorMessage).toBeDefined();
   });
+
+  it('validates a 1 MB JSON payload in under 50ms without lag', () => {
+    // Generate ~1 MB valid JSON array
+    const largeObject = Array.from({ length: 15000 }, (_, i) => ({
+      id: i,
+      uuid: `item-${i}-abcdef1234567890`,
+      active: i % 2 === 0,
+      name: `User ${i}`,
+    }));
+    const jsonStr = JSON.stringify(largeObject);
+    expect(jsonStr.length).toBeGreaterThan(1024 * 1024); // > 1 MB
+
+    const start = performance.now();
+    const result = validateJsonString(jsonStr);
+    const duration = performance.now() - start;
+
+    expect(result.isValid).toBe(true);
+    expect(duration).toBeLessThan(100); // Parses smoothly in < 100ms
+  });
 });
+

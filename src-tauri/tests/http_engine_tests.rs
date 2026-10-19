@@ -170,8 +170,12 @@ async fn test_http_engine_redirect_limit() {
         .as_str()
         .unwrap()
         .to_lowercase();
+    assert_eq!(
+        err_json["code"], "OP-NET-005",
+        "Error response must use standardized code OP-NET-005 for redirect limits"
+    );
     assert!(
-        technical.contains("redirect") || err_json["code"] == "OP-NET-999",
+        technical.contains("redirect"),
         "Error details must report redirect error"
     );
 }

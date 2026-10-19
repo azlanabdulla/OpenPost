@@ -118,6 +118,82 @@ export const APP_MESSAGES = {
     likelyCause: 'A component encountered an unhandled state or corrupted data structure.',
     actionText: 'Click Reload Application to restore state. Diagnostic details have been sanitized.',
   },
+
+  // Import & Converter
+  IMP_EMPTY_DATA: {
+    code: 'OP-IMP-001',
+    title: 'Empty Import Data',
+    message: 'The provided import input contains no data.',
+    likelyCause: 'Empty clipboard or blank file selected.',
+    actionText: 'Paste a valid cURL command or select a non-empty Postman or OpenPost JSON file.',
+  },
+  IMP_MALFORMED_JSON: {
+    code: 'OP-IMP-002',
+    title: 'Malformed Import JSON',
+    message: 'The import file contains invalid JSON syntax.',
+    likelyCause: 'Syntax error, unclosed bracket, or truncated file content.',
+    actionText: 'Verify the file content is valid JSON and retry.',
+  },
+  IMP_INVALID_FORMAT: {
+    code: 'OP-IMP-003',
+    title: 'Invalid Collection Format',
+    message: 'The file is valid JSON but does not match expected collection schemas.',
+    likelyCause: 'File is not a Postman v2.0/v2.1 collection or OpenPost export.',
+    actionText: 'Ensure the file contains valid Postman or OpenPost collection structures.',
+  },
+  IMP_UNSUPPORTED_VERSION: {
+    code: 'OP-IMP-004',
+    title: 'Unsupported Schema Version',
+    message: 'The collection schema version is not supported by this version of OpenPost.',
+    likelyCause: 'The collection was exported from a newer or incompatible schema.',
+    actionText: 'Update OpenPost or export using a supported format.',
+  },
+  IMP_FILE_SIZE_EXCEEDED: {
+    code: 'OP-IMP-005',
+    title: 'Oversized Import File',
+    message: 'The collection file exceeds the 10MB safety threshold.',
+    likelyCause: 'The imported file contains very large inline payloads.',
+    actionText: 'Split the collection into smaller files before importing.',
+  },
+
+  // Storage & Workspace Safety
+  SAFE_UNSAVED_TAB: {
+    code: 'OP-SAFE-001',
+    title: 'Unsaved Tab Discard Warning',
+    message: 'This tab contains unsaved modifications that will be lost.',
+    likelyCause: 'Closing a dirty tab without saving.',
+    actionText: 'Save to a collection or discard changes.',
+  },
+  SAFE_CORRUPT_DRAFT_RECOVERED: {
+    code: 'OP-SAFE-002',
+    title: 'Corrupted Draft Recovered',
+    message: 'The workspace draft was corrupted and automatically recovered from backup.',
+    likelyCause: 'Abrupt OS shutdown or unexpected file termination.',
+    actionText: 'Your tabs have been restored from the most recent safe state.',
+  },
+  SAFE_UNDO_ACTION: {
+    code: 'OP-SAFE-003',
+    title: 'Undo Available',
+    message: 'The item was deleted and can be restored.',
+    likelyCause: 'Item removed from workspace.',
+    actionText: 'Click Undo to restore the item.',
+  },
+  SAFE_EXTERNAL_MODIFICATION: {
+    code: 'OP-SAFE-004',
+    title: 'File Changed on Disk',
+    message: 'Workspace drafts were modified externally by another process.',
+    likelyCause: 'Another OpenPost instance or file editor modified the drafts file.',
+    actionText: 'Click Reload from Disk to refresh state safely.',
+  },
+
+  // Security & Keychain
+  SEC_KEYCHAIN_UNAVAILABLE: {
+    code: 'OP-SEC-002',
+    title: 'OS Secure Keychain Unavailable',
+    message: 'The OS credential manager is unavailable or denied access.',
+    likelyCause: 'Headless environment, sandbox restrictions, or missing keyring daemon.',
+    actionText: 'Credentials will remain in-memory for this session only and will not be saved to disk.',
+  },
 } as const;
 
 /**

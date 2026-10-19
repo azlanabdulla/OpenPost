@@ -18,6 +18,19 @@ describe('Postman Collection v2.1 Import Converter (OP-R2-014)', () => {
     expect(result.error).toContain('OP-IMP-002');
   });
 
+  it('rejects invalid collection format with OP-IMP-003', () => {
+    const result = convertPostmanCollection(JSON.stringify({ someRandomProperty: true }));
+    expect(result.error).toContain('OP-IMP-003');
+  });
+
+  it('rejects unknown schema versions with OP-IMP-004', () => {
+    const result = convertPostmanCollection(
+      JSON.stringify({ openpostFormat: '99.0.0', requests: [] })
+    );
+    expect(result.error).toContain('OP-IMP-004');
+    expect(result.error).toContain('99.0.0');
+  });
+
   it('parses valid multi-folder collection with requests, params, and auth', () => {
     const validFixture = fs.readFileSync(
       path.join(__dirname, 'fixtures/postman/valid_v2.1.json'),

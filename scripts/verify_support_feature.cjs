@@ -4,7 +4,9 @@ const path = require('path');
 const { spawn, execSync } = require('child_process');
 
 const PORT = 9779;
-const EXE_PATH = 'C:\\Users\\AZLAN\\AppData\\Local\\OpenPost\\openpost.exe';
+const EXE_PATH = fs.existsSync(path.join(__dirname, '..', 'src-tauri', 'target', 'debug', 'openpost.exe'))
+  ? path.join(__dirname, '..', 'src-tauri', 'target', 'debug', 'openpost.exe')
+  : path.join(process.env.LOCALAPPDATA || '', 'OpenPost', 'openpost.exe');
 const OUT_DIR = path.join(__dirname, '..', 'docs', 'screenshots', 'support_verification');
 
 if (!fs.existsSync(OUT_DIR)) {

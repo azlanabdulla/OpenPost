@@ -63,22 +63,43 @@ export function convertPostmanCollection(jsonString: string): PostmanConvertResu
   }
 
   // Handle single exported OpenPost format
-  if (data.openpostFormat && Array.isArray(data.requests)) {
-    const requests = data.requests.map((r: any) => ({
-      ...createDefaultRequest(),
-      ...r.request,
-      id: generateId(),
-      name: r.name || r.request?.name || 'Imported Request',
-    }));
-    return {
-      collectionName: 'OpenPost Export',
-      requests,
-      summary: {
+  if (data.openpostFormat) {
+    if (typeof data.openpostFormat !== 'string' || (!data.openpostFormat.startsWith('1.') && data.openpostFormat !== '1.0.0')) {
+      return {
+        collectionName: '',
+        requests: [],
+        summary: { collectionName: '', requestsCount: 0, foldersCount: 0, skippedFeatures: [] },
+        error: `OP-IMP-004: Unsupported schema version (${data.openpostFormat}). OpenPost currently supports OpenPost v1.x and Postman Collection v2.0/v2.1.`,
+      };
+    }
+
+    if (Array.isArray(data.requests)) {
+      const requests = data.requests.map((r: any) => ({
+        ...createDefaultRequest(),
+        ...r.request,
+        id: generateId(),
+        name: r.name || r.request?.name || 'Imported Request',
+      }));
+      return {
         collectionName: 'OpenPost Export',
-        requestsCount: requests.length,
-        foldersCount: 0,
-        skippedFeatures: [],
-      },
+        requests,
+        summary: {
+          collectionName: 'OpenPost Export',
+          requestsCount: requests.length,
+          foldersCount: 0,
+          skippedFeatures: [],
+        },
+      };
+    }
+  }
+
+  // Validate Postman structure (must have info or item)
+  if (!data.info && !data.item) {
+    return {
+      collectionName: '',
+      requests: [],
+      summary: { collectionName: '', requestsCount: 0, foldersCount: 0, skippedFeatures: [] },
+      error: 'OP-IMP-003: Invalid collection format. Expected a valid Postman Collection (v2.0/v2.1) or OpenPost JSON file.',
     };
   }
 
