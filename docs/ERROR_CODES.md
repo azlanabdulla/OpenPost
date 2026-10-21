@@ -97,3 +97,13 @@ All error and warning messages in OpenPost use standardized, searchable error co
 | :--- | :--- | :--- | :--- |
 | `OP-SEC-002` | **OS Secure Keychain Unavailable** | OS credential storage daemon is unavailable or access was denied. | Secrets are maintained strictly in-memory for the current session and never written to disk. |
 
+---
+
+## Request History (`OP-HIST-xxx`)
+
+| Code | Title | Description | Recommended User Action |
+| :--- | :--- | :--- | :--- |
+| `OP-HIST-001` | **History Clear Failed** | History clear failed due to locked database, permission denial, or IPC refusal. Existing history entries remain safe and unchanged. | Retry clearing history or verify database file permissions on `history.db`. |
+| `OP-HIST-002` | **History Deletion Failed** | Deleting individual history entry failed due to database or IPC error. In-memory history remains unchanged. | Retry deleting the entry or check database file permissions on `history.db`. |
+
+

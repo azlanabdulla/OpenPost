@@ -193,6 +193,22 @@ export const APP_MESSAGES = {
     actionText: 'Make folder writable or save to an alternate location. Tabs remain safe in memory.',
   },
 
+  // Request History
+  HIST_CLEAR_FAILED: {
+    code: 'OP-HIST-001',
+    title: 'History Clear Failed',
+    message: 'History could not be cleared. Your history is unchanged.',
+    likelyCause: 'Database file is locked, read-only, or unavailable.',
+    actionText: 'Retry clearing history or check file permissions on history.db.',
+  },
+  HIST_DELETE_FAILED: {
+    code: 'OP-HIST-002',
+    title: 'History Deletion Failed',
+    message: 'History entry could not be deleted. Your history is unchanged.',
+    likelyCause: 'Database file is locked, read-only, or unavailable.',
+    actionText: 'Retry deleting the entry or check file permissions on history.db.',
+  },
+
   // Security & Keychain
   SEC_KEYCHAIN_UNAVAILABLE: {
     code: 'OP-SEC-002',

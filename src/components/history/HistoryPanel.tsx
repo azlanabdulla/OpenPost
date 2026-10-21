@@ -13,6 +13,7 @@ export const HistoryPanel: React.FC = () => {
     entries,
     searchQuery,
     isLoading,
+    isClearing,
     loadHistory,
     deleteEntry,
     clearHistory,
@@ -91,13 +92,18 @@ export const HistoryPanel: React.FC = () => {
         {entries.length > 0 && (
           <button
             type="button"
+            disabled={isClearing}
             aria-label="Clear all request history"
             onClick={() => setIsClearModalOpen(true)}
-            className="flex items-center gap-1 px-2 py-0.5 text-[11px] text-surface-muted hover:text-rose-500 hover:bg-rose-500/10 rounded transition cursor-pointer"
+            className={`flex items-center gap-1 px-2 py-0.5 text-[11px] rounded transition ${
+              isClearing
+                ? 'text-surface-muted/50 cursor-not-allowed'
+                : 'text-surface-muted hover:text-rose-500 hover:bg-rose-500/10 cursor-pointer'
+            }`}
             title="Clear all request history"
           >
             <Trash2 className="w-3 h-3" />
-            <span>Clear</span>
+            <span>{isClearing ? 'Clearing...' : 'Clear'}</span>
           </button>
         )}
       </div>
@@ -213,14 +219,17 @@ export const HistoryPanel: React.FC = () => {
             </button>
             <button
               type="button"
-              onClick={() => {
-                clearHistory();
+              disabled={isClearing}
+              onClick={async () => {
                 setIsClearModalOpen(false);
+                await clearHistory();
               }}
-              className="px-3.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-medium text-xs shadow-sm transition cursor-pointer flex items-center gap-1.5"
+              className={`px-3.5 py-1.5 rounded-lg bg-rose-600 text-white font-medium text-xs shadow-sm transition flex items-center gap-1.5 ${
+                isClearing ? 'opacity-50 cursor-not-allowed' : 'hover:bg-rose-500 cursor-pointer'
+              }`}
             >
               <Trash2 className="w-3.5 h-3.5" />
-              <span>Clear All History</span>
+              <span>{isClearing ? 'Clearing...' : 'Clear All History'}</span>
             </button>
           </div>
         }

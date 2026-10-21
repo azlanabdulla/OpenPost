@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Scoped URL allowlist and safe external link opener routing exclusively to canonical repository destinations.
 
 ### Fixed
+- **Request History Deletion Safety**:
+  - Fixed an issue where `clearHistory()` optimistically cleared in-memory entries and emitted a "History Cleared" toast even when the Tauri IPC `clear_history` backend call rejected (reported by @aichance in [#10](https://github.com/azlanabdulla/OpenPost/issues/10)).
+  - Now, entries are only removed in-memory after backend confirmation; on rejection, existing entries are preserved, an error toast with error code `OP-HIST-001` is shown, and a Retry action is provided with no false success announcement.
+  - Concurrency safeguards ensure entries added while a clear is pending survive whether the clear succeeds or fails, and double clicks are prevented with an `isClearing` progress state.
+  - Fixed the same false-success bug class for single-entry history deletion (`deleteEntry`) with error code `OP-HIST-002` and IndexedDB promise error propagation.
 - **Canonical Repository URLs**:
   - Replaced all outdated and placeholder repository URLs with canonical destination (`https://github.com/azlanabdulla/OpenPost`).
   - Added automated URL integrity scanner to test suite and CI pipeline preventing accidental placeholder links.

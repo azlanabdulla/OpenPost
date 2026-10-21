@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { useRequestStore } from './requestStore';
 import { useToastStore } from './toastStore';
+import { APP_MESSAGES } from '../messages';
 
 export interface HistoryEntry {
   id: string;
@@ -36,6 +37,7 @@ interface HistoryState {
   entries: HistoryEntry[];
   searchQuery: string;
   isLoading: boolean;
+  isClearing: boolean;
   setSearchQuery: (query: string) => void;
   loadHistory: () => Promise<void>;
   addEntry: (entry: Omit<HistoryEntry, 'id' | 'timestamp'>) => Promise<void>;
@@ -121,10 +123,62 @@ function openIndexedDB(): Promise<IDBDatabase> {
   });
 }
 
+function clearIndexedDBHistory(): Promise<void> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const db = await openIndexedDB();
+      const tx = db.transaction(IDB_STORE, 'readwrite');
+      const store = tx.objectStore(IDB_STORE);
+      const req = store.clear();
+      req.onerror = () => reject(req.error || new Error('IndexedDB clear request failed'));
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error || new Error('IndexedDB clear transaction failed'));
+      tx.onabort = () => reject(tx.error || new Error('IndexedDB clear transaction aborted'));
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+function deleteIndexedDBHistoryItem(id: string): Promise<void> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const db = await openIndexedDB();
+      const tx = db.transaction(IDB_STORE, 'readwrite');
+      const store = tx.objectStore(IDB_STORE);
+      const req = store.delete(id);
+      req.onerror = () => reject(req.error || new Error('IndexedDB delete request failed'));
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error || new Error('IndexedDB delete transaction failed'));
+      tx.onabort = () => reject(tx.error || new Error('IndexedDB delete transaction aborted'));
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+function putIndexedDBHistoryItem(entry: HistoryEntry): Promise<void> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const db = await openIndexedDB();
+      const tx = db.transaction(IDB_STORE, 'readwrite');
+      const store = tx.objectStore(IDB_STORE);
+      const req = store.put(entry);
+      req.onerror = () => reject(req.error || new Error('IndexedDB put request failed'));
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error || new Error('IndexedDB put transaction failed'));
+      tx.onabort = () => reject(tx.error || new Error('IndexedDB put transaction aborted'));
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
 export const useHistoryStore = create<HistoryState>((set, get) => ({
   entries: [],
   searchQuery: '',
   isLoading: false,
+  isClearing: false,
 
   setSearchQuery: (query: string) => {
     set({ searchQuery: query });
@@ -228,10 +282,7 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
           maxLimit: MAX_HISTORY_LIMIT,
         });
       } else if (typeof indexedDB !== 'undefined') {
-        const db = await openIndexedDB();
-        const tx = db.transaction(IDB_STORE, 'readwrite');
-        const store = tx.objectStore(IDB_STORE);
-        store.put(fullEntry);
+        await putIndexedDBHistoryItem(fullEntry);
       }
     } catch (err) {
       console.error('Failed to record history entry:', err);
@@ -240,25 +291,22 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
 
   deleteEntry: async (id: string) => {
     const entryToDelete = get().entries.find((e) => e.id === id);
-    set((state) => ({
-      entries: state.entries.filter((e) => e.id !== id),
-    }));
+    if (!entryToDelete) return;
 
     try {
       if (isTauri()) {
         const { invoke } = await import('@tauri-apps/api/core');
         await invoke('delete_history_item', { id });
       } else if (typeof indexedDB !== 'undefined') {
-        const db = await openIndexedDB();
-        const tx = db.transaction(IDB_STORE, 'readwrite');
-        tx.objectStore(IDB_STORE).delete(id);
+        await deleteIndexedDBHistoryItem(id);
       }
-    } catch (err) {
-      console.error('Failed to delete history item:', err);
-    }
 
-    // Undo notification (OP-SAFE-005)
-    if (entryToDelete) {
+      // Backend deletion confirmed: now remove from memory state
+      set((state) => ({
+        entries: state.entries.filter((e) => e.id !== id),
+      }));
+
+      // Undo notification (OP-SAFE-005)
       useToastStore.getState().addToast({
         type: 'info',
         title: 'History Entry Deleted',
@@ -271,38 +319,78 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
           },
         },
       });
+    } catch (err) {
+      console.error('Failed to delete history item:', err);
+      // Entry is preserved unchanged in memory
+      useToastStore.getState().addToast({
+        type: 'error',
+        title: `${APP_MESSAGES.HIST_DELETE_FAILED.title} (${APP_MESSAGES.HIST_DELETE_FAILED.code})`,
+        message: APP_MESSAGES.HIST_DELETE_FAILED.message,
+        durationMs: 7000,
+        action: {
+          label: 'Retry',
+          onClick: async () => {
+            await get().deleteEntry(id);
+          },
+        },
+      });
     }
   },
 
   clearHistory: async () => {
+    if (get().isClearing) {
+      return;
+    }
     const previousEntries = [...get().entries];
-    set({ entries: [] });
+    const idsToClear = new Set(previousEntries.map((e) => e.id));
+    set({ isClearing: true });
+
     try {
       if (isTauri()) {
         const { invoke } = await import('@tauri-apps/api/core');
         await invoke('clear_history');
       } else if (typeof indexedDB !== 'undefined') {
-        const db = await openIndexedDB();
-        const tx = db.transaction(IDB_STORE, 'readwrite');
-        tx.objectStore(IDB_STORE).clear();
+        await clearIndexedDBHistory();
+      }
+
+      // Backend deletion confirmed: clear snapshotted entries from state.
+      // Entries added concurrently while clear was in-flight survive!
+      set((state) => ({
+        entries: state.entries.filter((e) => !idsToClear.has(e.id)),
+        isClearing: false,
+      }));
+
+      // Undo notification (OP-SAFE-006)
+      if (previousEntries.length > 0) {
+        useToastStore.getState().addToast({
+          type: 'info',
+          title: 'History Cleared',
+          message: `Cleared ${previousEntries.length} history item(s).`,
+          durationMs: 7000,
+          action: {
+            label: 'Undo',
+            onClick: async () => {
+              for (const item of previousEntries) {
+                await get().addEntry(item);
+              }
+            },
+          },
+        });
       }
     } catch (err) {
       console.error('Failed to clear history:', err);
-    }
+      // Keep existing entries unchanged in memory
+      set({ isClearing: false });
 
-    // Undo notification (OP-SAFE-006)
-    if (previousEntries.length > 0) {
       useToastStore.getState().addToast({
-        type: 'info',
-        title: 'History Cleared',
-        message: `Cleared ${previousEntries.length} history item(s).`,
+        type: 'error',
+        title: `${APP_MESSAGES.HIST_CLEAR_FAILED.title} (${APP_MESSAGES.HIST_CLEAR_FAILED.code})`,
+        message: APP_MESSAGES.HIST_CLEAR_FAILED.message,
         durationMs: 7000,
         action: {
-          label: 'Undo',
+          label: 'Retry',
           onClick: async () => {
-            for (const item of previousEntries) {
-              await get().addEntry(item);
-            }
+            await get().clearHistory();
           },
         },
       });

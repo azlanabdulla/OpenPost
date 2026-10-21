@@ -164,3 +164,87 @@ fn test_sanitize_url_secrets() {
     assert!(sanitized.contains("safe_param=hello"));
     assert!(sanitized.contains("dyn={{vault_token}}"));
 }
+
+#[test]
+fn test_clear_history_error_on_readonly_db() {
+    let temp_dir = std::env::temp_dir().join(format!(
+        "openpost_ro_test_{}",
+        SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    let _ = fs::create_dir_all(&temp_dir);
+    let db_path = temp_dir.join("history_ro.db");
+
+    // Initialize db with schema and record
+    {
+        let conn = Connection::open(&db_path).unwrap();
+        init_schema(&conn).unwrap();
+        insert_history_record(&conn, &create_test_entry("req-1", 1000), 100).unwrap();
+    }
+
+    // Open connection with read-only flag
+    let ro_conn =
+        Connection::open_with_flags(&db_path, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY).unwrap();
+
+    // Verify clear_history_records returns an Err
+    let clear_result = clear_history_records(&ro_conn);
+    assert!(
+        clear_result.is_err(),
+        "clear_history_records on read-only DB must return Err"
+    );
+    let err_msg = clear_result.unwrap_err();
+    assert!(err_msg.contains("Failed to clear request history"));
+
+    // Verify delete_history_record also returns an Err
+    let delete_result = delete_history_record(&ro_conn, "req-1");
+    assert!(
+        delete_result.is_err(),
+        "delete_history_record on read-only DB must return Err"
+    );
+
+    // Verify the record was NOT deleted
+    let verify_conn = Connection::open(&db_path).unwrap();
+    let records = get_history_records(&verify_conn).unwrap();
+    assert_eq!(records.len(), 1);
+    assert_eq!(records[0].id, "req-1");
+
+    let _ = fs::remove_dir_all(&temp_dir);
+}
+
+#[test]
+fn test_clear_history_error_on_locked_db() {
+    let temp_dir = std::env::temp_dir().join(format!(
+        "openpost_lock_test_{}",
+        SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    let _ = fs::create_dir_all(&temp_dir);
+    let db_path = temp_dir.join("history_locked.db");
+
+    // Initialize db with schema and record
+    let conn1 = Connection::open(&db_path).unwrap();
+    init_schema(&conn1).unwrap();
+    insert_history_record(&conn1, &create_test_entry("req-lock", 1000), 100).unwrap();
+
+    // Acquire an exclusive lock with conn1
+    conn1.execute_batch("BEGIN EXCLUSIVE TRANSACTION;").unwrap();
+
+    // conn2 attempts to clear history and must fail
+    let conn2 = Connection::open(&db_path).unwrap();
+    let clear_result = clear_history_records(&conn2);
+    assert!(
+        clear_result.is_err(),
+        "clear_history_records on locked DB must return Err"
+    );
+    assert!(clear_result
+        .unwrap_err()
+        .contains("Failed to clear request history"));
+
+    // Rollback conn1 and clean up
+    conn1.execute_batch("ROLLBACK;").unwrap();
+    let _ = fs::remove_dir_all(&temp_dir);
+}
